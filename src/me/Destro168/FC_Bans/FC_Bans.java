@@ -19,9 +19,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -89,7 +89,7 @@ public class FC_Bans extends JavaPlugin
 		public PlayerPreLogonListener() { }
 		
 		@EventHandler
-		public void onPlayerPreLogin(PlayerPreLoginEvent event)
+		public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event)
 		{
 			//Variable Declarations
 			name = event.getName();

@@ -1,3 +1,7 @@
+Version 1.21 (Unreleased):
+
+Config renamed to _config. Please rename your config file! Coding a transfer of like 35 options is too much work for poor ol' Destro :(. So just rename your config.yml to _config.yml.
+
 Version 1.2:
 
 * Compiled on Build #2377 1.3.2-R1.0 Bukkit.
@@ -7,6 +11,9 @@ Version 1.2:
 * New debug option. Disabled by default. Can be enabled to bypass command try/catches to show errors.
 * Source can be found on github now, no longer included in package. Lots of file size decreases, weeee.
 * Rainbows.
+* (Todo) - log that startup will be slow for 1.2
+* (Todo) - optimized transfer of player names
+* (Todo) - Add a lot more logging, check for infinite loops.
 
 Version 1.12:
 
