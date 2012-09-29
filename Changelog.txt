@@ -1,0 +1,32 @@
+Version 1.2:
+
+* Now have bans for players stored in seperate files in the FC_Suite_Shared folder. The first statup might be a little slow due to player information transfer (one time update thing).
+* Recoded how commands are evaluated entirely so that I could add in as well a new debug option. Roughly 20.58% reduction to file size due to new method, cool.
+* Optimized code a bit at the cost of readability, but may be more readable due to less code copying.
+* New debug option. Disabled by default. Can be enabled to bypass command try/catches to show errors.
+* Source can be found on github now, no longer included in package.
+* Rainbows.
+
+Version 1.12:
+
+* Updated freeze command to work better. Had to research "Player Join Event". Was using playerLogin event. Also makes it detect better materials to pass through on grounding players.
+* Added reason tags to /fc_Bans 2 kick command help.
+* Fixed capitalization for commands not registering them properly.
+* Fixed commands with /fc_bans to work.
+* Added command to disable the banned player join alert.
+* Fixed Name Matching not properly matching!
+* Updated the check (sub-)commands to match names now properly.
+* Made it so that you can exclude a punishment reason and duration again for the default of "perm" to be used.
+
+Changelog 1.11:
+
+* Made it so that you have to remove punishments before you can apply a new one.
+* Lots of minor cosmetic changes.
+* Freeze command now has a 1 second delay. Automatically grounds the player. Uses exact coordinates of the player now to prevent suffocation issues.
+* Made a proper error tag (FC_Suite_Shared) for error messages.
+* Added ability to change check and freeze keywords now if you want to.
+* Fixed FC_Bans being null when used from console.
+* New config setting, ShowBannedPlayersAttemptedLogins which will show banned players attempted logons.
+* When players log on, those that can see warnings will be alerted to the current mute/freeze status of players.
+* Realized that I was using the player ips section for the recording of multi-account users, DURR. Don't delete that section and it's called "PlayerIps" again. Please just rename the section to "PlayerIps" if you want to preserve your old player names. Thank you and sorry about this, it's just a small fix.
+* Didn't make a changelog sadly before so this is all you get. There are many more changes, just not listed. Will be actually making good changelogs from now on though. :D

@@ -1,0 +1,21 @@
+name: FC_Bans
+main: me.Destro168.FC_Bans.FC_Bans
+version: 1.2
+description: Ban/Warn plugin
+commands:
+    ban:
+        description: This command bans people.
+    kick:
+        description: This command kicks people.
+    warn:
+        description: This command handles warning of players.
+    mute:
+        description: This command will mute players.
+    check:
+        description: This command will check player statuses.
+    freeze:
+        description: This command freezes players.
+    fc_bans:
+        description: This command will display help, just type it in!
+softdepend: [Essentials]
+depend: [FC_Suite_Shared]
