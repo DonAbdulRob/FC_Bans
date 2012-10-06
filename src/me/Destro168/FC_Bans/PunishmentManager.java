@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.Destro168.ConfigManagers.SharedPlayerProfileManager;
+import me.Destro168.ConfigManagers.CustomConfigurationManager;
 import me.Destro168.FC_Bans.Utils.ConfigSettingsManager;
 import me.Destro168.Messaging.BroadcastLib;
 import me.Destro168.Messaging.MessageLib;
@@ -17,7 +17,6 @@ import me.Destro168.FC_Suite_Shared.NameMatcher;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.command.ColouredConsoleSender;
 import org.bukkit.entity.Player;
 
@@ -25,7 +24,7 @@ public class PunishmentManager
 {
 	//Variable declarations
 	private final int MAX_WARNINGS = 100;
-	private SharedPlayerProfileManager profile;
+	private CustomConfigurationManager profile;
 	private final DateFormat dfm = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private String playerName;
 	private String playerPath;
@@ -87,85 +86,13 @@ public class PunishmentManager
 			playerName = playerName_;
 		
 		//Use player name before modified for real name.
-		profile = new SharedPlayerProfileManager(playerName, FC_Bans.plugin.getDataFolder().getAbsolutePath());
+		profile = new CustomConfigurationManager(FC_Bans.plugin.getDataFolder().getAbsolutePath(), playerName);
 		
 		//Set the playerPath.
 		playerPath = "FC_Bans.";
 		
 		//Check if the profile was made before.
 		checkCreatedBefore();
-	}
-	
-	public void transferPlayerData()
-	{
-		//Variable Declarations
-		FileConfiguration config;
-		
-		config = FC_Bans.plugin.getConfig();
-		
-		String oldPlayerPath = "Warnings." + playerName.toLowerCase() + ".";
-		
-		if (config.getString(oldPlayerPath + "unbanDate") == null)
-			return;
-		
-		if (config.getString(oldPlayerPath + "unbanDate").equals(""))
-			return;
-		
-		profile.set("FC_Bans.unbanDate", config.getInt(oldPlayerPath + "unbanDate"));
-		profile.set("FC_Bans.unmuteDate", config.getInt(oldPlayerPath + "unmuteDate"));
-		profile.set("FC_Bans.isPermaBanned", config.getBoolean(oldPlayerPath + "isPermaBanned"));
-		profile.set("FC_Bans.isPermaMuted", config.getBoolean(oldPlayerPath + "isPermaMuted"));
-		profile.set("FC_Bans.ip", config.getString(oldPlayerPath + "ip"));
-		
-		for (int i = 0; i < MAX_WARNINGS; i++)
-		{
-			if (!(config.getString(oldPlayerPath + i + ".warnGiverName") == null))
-			{
-				if (!config.getString(oldPlayerPath + i + ".warnGiverName").equals(""))
-				{
-					profile.set("FC_Bans." + i + ".level", config.getInt(oldPlayerPath + i + ".level"));
-					profile.set("FC_Bans." + i + ".type", config.getString(oldPlayerPath + i + ".type"));
-					profile.set("FC_Bans." + i + ".reason", config.getString(oldPlayerPath + i + ".reason"));
-					profile.set("FC_Bans." + i + ".time", config.getString(oldPlayerPath + i + ".time"));
-					profile.set("FC_Bans." + i + ".warnGiverName", config.getString(oldPlayerPath + i + ".warnGiverName"));
-				}
-			}
-		}
-	}
-	
-	//Transfer player data a second time.
-	public void transferPlayerData2()
-	{
-		SharedPlayerProfileManager oldProfile = new SharedPlayerProfileManager(playerName, "");
-		
-		if (oldProfile.getBoolean(playerPath + "created") == false)
-			return;
-		
-		setCreated(true);
-		setUnbanDate(oldProfile.getLong(playerPath + "unbanDate"));
-		setUnmuteDate(oldProfile.getLong(playerPath + "unmuteDate"));
-		setUnfreezeDate(oldProfile.getLong(playerPath + "unfreezeDate"));
-		setIsPermaBanned(oldProfile.getBoolean(playerPath + "isPermaBanned"));
-		setIsPermaMuted(oldProfile.getBoolean(playerPath + "isPermaMuted"));
-		setIsIpBanned(oldProfile.getBoolean(playerPath + "isIpBanned"));
-		setIsPermaFrozen(oldProfile.getBoolean(playerPath + "isPermaFrozen"));
-		setIp(oldProfile.getString(playerPath + "ip"));
-		
-		for (int i = 0; i < MAX_WARNINGS; i++)
-		{
-			if (!(oldProfile.getString(playerPath + i + ".reason") == null))
-			{
-				setWarningReason(i, oldProfile.getString(playerPath + i + ".reason"));
-				setWarningTime(i, oldProfile.getString(playerPath + i + ".time"));
-				setWarningLength(i, oldProfile.getString(playerPath + i + ".length"));
-				setWarningType(i, oldProfile.getString(playerPath + i + ".type"));
-				setWarnGiverName(i, oldProfile.getString(playerPath + i + ".warnGiverName"));
-				setWarningLevel(i, oldProfile.getInt(playerPath + i + ".level"));
-			}
-		}
-		
-		//Delete all old data.
-		oldProfile.set("FC_Bans", null);
 	}
 	
 	public void updatePlayerWarnings()
@@ -451,6 +378,14 @@ public class PunishmentManager
 		//Remove perma-bans.
 		setIsPermaBanned(false);
 		
+		if (csm.getEnableBukkitBanSynergy())
+		{
+			Bukkit.getServer().getOfflinePlayer(playerName).setBanned(false);	//Set the player to unbanned through bukkit.
+			
+			if (getIp() != null)
+				Bukkit.getServer().unbanIP(getIp()); //Enable IP ban through bukkit.
+		}
+		
 		//Remove ip ban.
 		setIsIpBanned(false);
 	}
@@ -570,6 +505,9 @@ public class PunishmentManager
 				//Set the players ban record, permanent, true.
 				setIsPermaBanned(true);
 				
+				if (csm.getEnableBukkitBanSynergy())
+					Bukkit.getServer().getOfflinePlayer(playerName).setBanned(true);	//Set the player to banned through bukkit.
+				
 				//Alert the player that they are banned.
 				dealPunishment(1, reason, durationTimeText, punishGiver);
 			}
@@ -629,6 +567,9 @@ public class PunishmentManager
 				
 				//Get the player
 				dealPunishment(1, reason, durationTimeText, punishGiver);
+				
+				if (csm.getEnableBukkitBanSynergy())
+					Bukkit.getServer().getOfflinePlayer(playerName).setBanned(true);	//Set the player to banned through bukkit.
 			}
 			
 			//If a mute

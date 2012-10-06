@@ -3,10 +3,9 @@ package me.Destro168.FC_Bans.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import me.Destro168.ConfigManagers.CustomConfigurationManager;
 import me.Destro168.FC_Bans.FC_Bans;
 import me.Destro168.FC_Bans.PunishmentManager;
 
@@ -14,22 +13,20 @@ public class ConfigSettingsManager
 {
 	private FC_Bans plugin;
 	private FileConfiguration config;
+	private CustomConfigurationManager ccm;
 	
 	public ConfigSettingsManager()
 	{
 		plugin = FC_Bans.plugin;
+		ccm = new CustomConfigurationManager(FC_Bans.plugin.getDataFolder().getAbsolutePath(), "%BanSpecialCode%");
 	}
 	
 	//Gets
-	public String getName(String ip) { config = plugin.getConfig(); return config.getString("PlayerIps." + ip); }
+	public String getName(String ip) { return ccm.getString("PlayerIps." + ip); }
 	private void setName(String ip, String name) 
 	{
-		config = plugin.getConfig();
-		
 		if (storeAllPlayerIps())
-			config.set("PlayerIps." + ip, name);
-		
-		plugin.saveConfig();
+			ccm.set("PlayerIps." + ip, name);
 	}
 	
 	public double getVersion() { config = plugin.getConfig(); return config.getDouble("Version"); }
@@ -66,6 +63,7 @@ public class ConfigSettingsManager
 	
 	public boolean storeAllPlayerIps() { config = plugin.getConfig(); return config.getBoolean("Setting.StoreAllPlayerIps"); }
 	public boolean getDebugMode() { config = plugin.getConfig(); return config.getBoolean("Setting.debugMode"); }
+	public boolean getEnableBukkitBanSynergy() { config = plugin.getConfig(); return config.getBoolean("Setting.enableBukkitBanSynergy"); }
 	
 	//Sets
 	public void setVersion(double x) { config = plugin.getConfig(); config.set("Version", x); }
@@ -102,6 +100,7 @@ public class ConfigSettingsManager
 	
 	public void setStoreAllPlayerIps(boolean x) { config = plugin.getConfig(); config.set("Setting.StoreAllPlayerIps", x); }
 	public void setDebugMode(boolean x) { config = plugin.getConfig(); config.set("Setting.debugMode", x); }
+	public void setEnableBukkitBanSynergy(boolean x) { config = plugin.getConfig(); config.set("Setting.enableBukkitBanSynergy", x); }
 	
 	//Basically creates default settings for when the plugin first runs.
 	public void handleConfiguration()
@@ -110,33 +109,17 @@ public class ConfigSettingsManager
 		config = plugin.getConfig();
 		
 		//Update config files to 0.4
-		if (getVersion() < 0.4)
+		if (getVersion() < 1.2)
 		{
-			//Header for configuration file
-			config.options().header("These are configuration variables");
-			
 			//Set the new version
-			setVersion(0.4);
+			setVersion(1.2);
 			
-			//Enable the feature automatic enable.
 			setGlobalAnnouncementsEnabled(true);
-			
-			//Enable the feature automatic enable.
 			setAutoShowWarningList(true);
-		}
-		
-		// Upgrade to 0.42
-		if (config.getDouble("Version") < 0.51)
-		{
-			//Set the new version
-			setVersion(0.51);
-			
-			//Set new globals.
 			setDisplayWarnGiverNameOnPunish(true);
 			setPurgeAllMultipleAccountUsers(false);
 			setPreventMultiAccounting(true);
 			
-			//Set up warning settings.
 			setLowWarningLevel(12);
 			setMediumWarningLevel(24);
 			setHighWarningLevel(36);
@@ -146,21 +129,12 @@ public class ConfigSettingsManager
 			setWarningLevelKick(2);
 			setWarningLevelMute(3);
 			setWarningLevelBan(4);
+			
 			setWarnBonusPerDayBan(2);
 			setWarnBonusPerDayMute(1);
-		}
-		
-		if (config.getDouble("Version") < 0.53)
-		{
-			setVersion(0.53);
 			
 			setWarnBonusPerDayMute(1);
 			setWarnBonusPerDayBan(2);
-		}
-		
-		if (config.getDouble("Version") < 0.7)
-		{
-			setVersion(0.7);
 			
 			//New blocked commands feature, store blocked commands.
 			List<String> x = new ArrayList<String>();
@@ -189,64 +163,28 @@ public class ConfigSettingsManager
 			//New configurable option, blocked command while muted tempban.
 			setAutoPunishType(1);
 			setAutoPunishLength("5m");
-		}
-		
-		//Update to 0.8
-		if (config.getDouble("Version") < 0.81)
-		{
-			setVersion(0.81);
-			
-			//Transfer all player data to the new file storage system.
-			PunishmentManager pm;
-			
-			for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-			{
-				pm = new PunishmentManager(player.getName());
-				
-				pm.transferPlayerData();
-			}
-			
-			FileConfiguration config = FC_Bans.plugin.getConfig();
-			
-			//Delete old warnings section.
-			config.set("Warnings", null);
 			
 			//New Configuration option.
 			setStoreAllPlayerIps(true);
-		}
-		
-		if (config.getDouble("Version") < 1.0)
-		{
-			setVersion(1.0);
 			
 			setWarningLevelFreeze(0);
 			setWarnBonusPerDayFreeze(1);
-		}
-		
-		if (config.getDouble("Version") < 1.11)
-		{
-			setVersion(1.11);
 			
 			setFreezeKeyWord("freeze");
 			setCheckKeyWord("check");
 			setShowBannedPlayersAttemptedLogins(true);
-		}
-		
-		if (config.getDouble("Version") < 1.2)
-		{
-			setVersion(1.2);
-			
+
 			//Store new debug mode.
 			setDebugMode(false);
+		}
+		
+		if (getVersion() < 2.0)
+		{
+			//Update the version.
+			setVersion(2.0);
 			
-			//Transfer all player data to the new file storage system.
-			PunishmentManager pm;
-			
-			for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-			{
-				pm = new PunishmentManager(player.getName());
-				pm.transferPlayerData2();
-			}
+			//Enable bukkit banning synergy.
+			setEnableBukkitBanSynergy(false);
 		}
 		
 		//Save config

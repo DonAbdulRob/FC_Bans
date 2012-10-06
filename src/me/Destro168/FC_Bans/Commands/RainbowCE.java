@@ -361,7 +361,7 @@ public class RainbowCE implements CommandExecutor
 		//Check if argument ip is given.
 		if (arg0 != null)
 		{
-			if (arg0.equals("ip"))
+			if (arg0.equalsIgnoreCase("ip"))
 			{
 				//Set final punish arg.
 				bap.setPunishReason(3);
@@ -371,14 +371,16 @@ public class RainbowCE implements CommandExecutor
 					return true;
 				
 				//Handle ip stuff if the player has logged on before.
-				if (Bukkit.getServer().getPlayer(arg1) != null)
+				if (Bukkit.getServer().getOfflinePlayer(arg1) != null)
 				{
-					//Add the players ip to the configuration file.
-					record.setIp(Bukkit.getServer().getPlayer(arg1).getAddress().toString());
-					
 					//Set players ip ban to false.
 					record.setIsIpBanned(true);
+					
+					if (csm.getEnableBukkitBanSynergy())
+						Bukkit.getServer().banIP(record.getIp()); //Enable IP ban through bukkit.
 				}
+				
+				return true;
 			}
 		}
 		
@@ -396,10 +398,17 @@ public class RainbowCE implements CommandExecutor
 		return true;
 	}
 	
-	private  boolean actuallyBanPlayer(CommandSender sender, String target, String duration, String reason, String punishGiver)
+	private boolean actuallyBanPlayer(CommandSender sender, String target, String duration, String reason, String punishGiver)
 	{
 		//Get the record from the first passed argument.
 		record = new PunishmentManager(target);
+		
+		//If the players ip isn't logged, then we log it.
+		if (record.getIp() == null)
+		{
+			//The player should always be online OR the ip is recorded on leaves, since the ip is null, the player must be online. <- Sexy programmer logic right there. So store ip.
+			record.setIp(Bukkit.getServer().getPlayer(arg1).getAddress().getAddress().getHostAddress());
+		}
 		
 		if (record.isBanned() == true)
 			return msgLib.errorAlreadyPunished();

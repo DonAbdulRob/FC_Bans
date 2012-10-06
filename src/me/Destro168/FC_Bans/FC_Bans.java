@@ -72,7 +72,7 @@ public class FC_Bans extends JavaPlugin
 		getServer().getPluginManager().registerEvents(new PlayerCommandListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
 		getServer().getPluginManager().registerEvents(new BlockPlaceListener(), this);
-		getServer().getPluginManager().registerEvents(new PlayJoinEvent(), this);
+		getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 		
 		//Start task to MOVE ALL OF THE PLAYERS! MUAHAHA
@@ -88,7 +88,7 @@ public class FC_Bans extends JavaPlugin
 		
 		public PlayerPreLogonListener() { }
 		
-		@EventHandler
+		@EventHandler(priority = EventPriority.HIGHEST)
 		public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event)
 		{
 			//Variable Declarations
@@ -187,11 +187,11 @@ public class FC_Bans extends JavaPlugin
 		}
 	}
 	
-	public class PlayJoinEvent implements Listener
+	public class PlayerJoinListener implements Listener
 	{
-		@EventHandler
 		public void onPlayerJoin(PlayerJoinEvent event)
 		{
+			//Begin player freezing.
 			fm.startPlayerFreeze(event.getPlayer());
 		}
 	}
@@ -201,7 +201,18 @@ public class FC_Bans extends JavaPlugin
 		@EventHandler
 		public void onPlayerQuit(PlayerQuitEvent event)
 		{
-			fm.stopPlayerFreezeTask(event.getPlayer().getName());
+			//Variable Declarations
+			Player eventPlayer = event.getPlayer();
+			
+			//End the freeze task (if one exists).
+			fm.stopPlayerFreezeTask(eventPlayer.getName());
+			
+			//Create a punishment manager.
+			PunishmentManager pm = new PunishmentManager(eventPlayer.getName());
+			
+			//Always store the players ip if one isn't stored.
+			if (pm.getIp() == null)
+				pm.setIp(eventPlayer.getAddress().getAddress().getHostAddress());
 		}
 	}
 	

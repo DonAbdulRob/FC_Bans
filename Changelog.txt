@@ -1,6 +1,10 @@
-Version 1.21 (Unreleased):
+Version 2.0:
 
-Config renamed to _config. Please rename your config file! Coding a transfer of like 35 options is too much work for poor ol' Destro :(. So just rename your config.yml to _config.yml.
+- Added new configuration option, "enableBukkitBansSynergy". Check the front page for information about this feature. Took like 5 hours to get all this stuff together, ugh.
+- There was a lot of testing done for offline-mode servers in this iteration. Offline mode servers can ip-ban and normally ban now if they have the new setting enabled.
+- I hadn't noticed but they weren't properly ending the ban command function causing players to get banned twice which would just result in a "player is already banned, please remove ban" message.
+- Check FC_Suite_Shared for what to do with player information. You have to move the player data into the player information section now if you want to keep your previous bans. FC_Suite_Shared also now hosted on github and it's link on the plugins changelog page and the readme for the FC_Bans package.
+- Ips are now stored in a seperate file. This is the last time I'll be removing/renaming the section, haha, sorry about all the trouble on this. I'm very happy with my new file structure so this should be last time (as said in FC_Suite_Shared changelog) for all these kinds of moves. I'm trying to get my plugins to a more mature state. Feel free to let the file generate and then move your data into it, OR, you can create the file at ~/plugins/FC_Bans/ipLogging.yml and put your PlayerIps section and all the information inside of it into the ipLogging.yml file. Offline-mode servers don't need to do this because the multi-accounting features are disabled on them.
 
 Version 1.2:
 
