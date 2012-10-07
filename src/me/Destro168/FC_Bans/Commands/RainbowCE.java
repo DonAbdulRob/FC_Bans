@@ -122,18 +122,33 @@ public class RainbowCE implements CommandExecutor
 	{
 		//Handle check command if the first argument was check.
 		if (arg0.equalsIgnoreCase("check"))
+		{
+			if (arg1.equalsIgnoreCase(""))
+				return msgLib.errorInvalidCommand();
+			
 			checkSubCommand();
+		}
 		
 		//Handle remove argument if first argument was remove.
 		else if (arg0.equalsIgnoreCase("remove"))
+		{
+			if (arg1.equalsIgnoreCase(""))
+				return msgLib.errorInvalidCommand();
+			
 			removeSubCommand();
+		}
 		
-		//SImply taking action if no argument was given.
+		//Simply take action if no argument was given.
 		else
 		{
 			//Do not check immunity on check commands.
 			if (commandType == checkType)
+			{
+				if (arg0.equalsIgnoreCase(""))
+					return msgLib.errorInvalidCommand();
+				
 				checkCommand();
+			}
 			
 			//Do not check commands on help commands.
 			else if (commandType == helpType)
@@ -142,6 +157,9 @@ public class RainbowCE implements CommandExecutor
 			//Check immunity for certain permissions.
 			else
 			{
+				if (arg0.equalsIgnoreCase(""))
+					return msgLib.errorInvalidCommand();
+				
 				//Check if the player is immune
 				if (perms.isImmune(arg0) == true)
 					return msgLib.isImmune();
@@ -176,7 +194,7 @@ public class RainbowCE implements CommandExecutor
 		{
 			//If no permission, then cancel command use.
 			if (perms.canBanCheck() == false)
-				msgLib.errorNoPermission();
+				return msgLib.errorNoPermission();
 			
 			//Message punishment status.
 			if (player != null)
@@ -190,9 +208,6 @@ public class RainbowCE implements CommandExecutor
 			if (perms.canFreezeCheck() == false)
 				return msgLib.errorNoPermission();
 			
-			//First argument is check so get name from 2nd argument.
-			record = new PunishmentManager(arg1);
-			
 			//Message punishment status.
 			if (player != null)
 				record.sendIsFrozen(player);
@@ -205,9 +220,6 @@ public class RainbowCE implements CommandExecutor
 			if (perms.canMuteCheck() == false)
 				return msgLib.errorNoPermission();
 			
-			//First argument is check so get name from 2nd argument.
-			record = new PunishmentManager(arg1);
-			
 			//Message punishment status.
 			if (player != null)
 				record.sendIsMuted(player);
@@ -219,9 +231,6 @@ public class RainbowCE implements CommandExecutor
 			//Without permission deny the command.
 			if (perms.canWarn() == false)
 				return msgLib.errorNoPermission();
-			
-			//First argument is check so get name from 2nd argument.
-			record = new PunishmentManager(arg1);
 			
 			//Send the player the warning list.
 			record.showWarningList(sender);
@@ -239,7 +248,7 @@ public class RainbowCE implements CommandExecutor
 		{
 			//If no permission, then cancel command use.
 			if (perms.canBanRemove() == false)
-				msgLib.errorNoPermission();
+				return msgLib.errorNoPermission();
 			
 			//Unban the player.
 			record.unban();
@@ -325,9 +334,6 @@ public class RainbowCE implements CommandExecutor
 		if (perms.canCheck() == false)
 			return msgLib.errorNoPermission();
 		
-		if (bap.getArg(0).equals(""))
-			return true;
-		
 		//First argument is check so get name from 2nd argument.
 		record = new PunishmentManager(arg0);
 		
@@ -356,7 +362,7 @@ public class RainbowCE implements CommandExecutor
 	{
 		//If no permission, then cancel command use.
 		if (perms.canBan() == false)
-			msgLib.errorNoPermission();
+			return msgLib.errorNoPermission();
 		
 		//Check if argument ip is given.
 		if (arg0 != null)

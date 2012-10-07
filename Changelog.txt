@@ -1,3 +1,9 @@
+Version 2.1:
+
+- Corrected errors where commands were not returning. I don't know how the return statements got removed but they were.
+- Fixed a lot of instances where using incomplete commands could cause errors. Now you will properly get denied messages.
+- Make sure to read the FC_Suite_Shared changelog and make changes according to what it says.
+
 Version 2.0:
 
 - Added new configuration option, "enableBukkitBansSynergy". Check the front page for information about this feature. Took like 5 hours to get all this stuff together, ugh.
