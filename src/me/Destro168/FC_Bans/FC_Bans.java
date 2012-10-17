@@ -20,9 +20,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -40,7 +40,7 @@ public class FC_Bans extends JavaPlugin
 	@Override
 	public void onDisable()
 	{
-		this.log.info("[FC_Bans] Disabled Successfully.");
+		this.getLogger().info("Disabled Successfully.");
 	}
 	
 	@Override
@@ -76,7 +76,7 @@ public class FC_Bans extends JavaPlugin
 		getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 		
 		//Start task to MOVE ALL OF THE PLAYERS! MUAHAHA
-		this.log.info("[FC_Bans] Enabled Successfully.");
+		this.getLogger().info("Enabled Successfully.");
 	}
 	
 	//Prevent banned players from logging in.
@@ -105,12 +105,28 @@ public class FC_Bans extends JavaPlugin
 				
 				if (pm.getIsPermaBanned() == true)
 				{
-					event.disallow(Result.KICK_BANNED, "You are permanently banned!");
+					//Create the kick reason.
+					if (csm.getDisplayWarnGiverNameOnPunish() == true)
+						event.setKickMessage("You were permanently banned by " + pm.getMostRecentBanGiver() + " for " + pm.getMostRecentBanReason() + "!");
+					else
+						event.setKickMessage("You are permanently banned.");
+					
+					//Actually kick the player.
+					event.setLoginResult(Result.KICK_BANNED);
+					
 					return;
 				}
 				else
 				{
-					event.disallow(Result.KICK_BANNED, "You are banned until " + pm.getUnbanDateNormal() + "!");
+					//Create the kick reason.
+					if (csm.getDisplayWarnGiverNameOnPunish() == true)
+						event.setKickMessage("You were banned until " + pm.getUnbanDateNormal() + " by " + pm.getMostRecentBanGiver() + " for " + pm.getMostRecentBanReason() + "!");
+					else
+						event.setKickMessage("You are banned until " + pm.getUnbanDateNormal() + "!");
+
+					//Actually kick the player.
+					event.setLoginResult(Result.KICK_BANNED);
+					
 					return;
 				}
 			}
@@ -124,7 +140,11 @@ public class FC_Bans extends JavaPlugin
 					if (csm.getShowBannedPlayersAttemptedLogins() == true)
 						showJoinWarning(0);
 					
-					event.disallow(Result.KICK_BANNED, "You are permanently banned!");
+					//Create the kick reason.
+					event.setKickMessage("You are permanently banned.");
+
+					//Actually kick the player.
+					event.setLoginResult(Result.KICK_BANNED);
 					
 					return;
 				}
@@ -142,6 +162,9 @@ public class FC_Bans extends JavaPlugin
 				showJoinWarning(2);
 			else
 				showJoinWarning(-1);
+			
+			//Store players ip.
+			pm.setIp(event.getAddress().getHostAddress());
 		}
 		
 		private void showJoinWarning(int punishType)
@@ -206,13 +229,6 @@ public class FC_Bans extends JavaPlugin
 			
 			//End the freeze task (if one exists).
 			fm.stopPlayerFreezeTask(eventPlayer.getName());
-			
-			//Create a punishment manager.
-			PunishmentManager pm = new PunishmentManager(eventPlayer.getName());
-			
-			//Always store the players ip if one isn't stored.
-			if (pm.getIp() == null)
-				pm.setIp(eventPlayer.getAddress().getAddress().getHostAddress());
 		}
 	}
 	
@@ -254,9 +270,9 @@ public class FC_Bans extends JavaPlugin
 				FC_Bans.plugin.getLogger().info("[Command Blocked - " + player.getName() + "] " + event.getMessage());
 				
 				if (pm.getIsPermaMuted() == true)
-					kickMessage = "[Blocked Command] You are permanently muted.";
+					kickMessage = "[Blocked] You are permanently muted.";
 				else
-					kickMessage = "[Blocked Command] You are muted until " + pm.getUnmuteDateNormal() + "!";
+					kickMessage = "[Blocked] You are muted until " + pm.getUnmuteDateNormal() + "!";
 				
 				//Kick and send kick message.
 				player.kickPlayer(kickMessage);
@@ -271,23 +287,6 @@ public class FC_Bans extends JavaPlugin
 				//Return
 				return;
 			}
-			
-			//TODO <- FC_Bans -> Check for ability to tell people who are muted that the muted person is muted. Check for updates.
-			/*
-			//If the person chatting isn't muted, we have to intercept recievers of the message.
-			for (Player recips : event.get)
-			{
-				//Create a new punishment manager for reciever.
-				pm = new PunishmentManager(plugin, recips.getName());
-				
-				if (pm.isMuted() == true)
-				{
-					//Only send message if the message contains the recips name
-					if (event.getMessage().toLowerCase().contains(pm.getName()))
-						player.sendMessage(ChatColor.GRAY + "[" + ChatColor.RED + "Warning" + ChatColor.GRAY + "] " + ChatColor.YELLOW + recips.getName() + ChatColor.GRAY + " is muted.");
-				}
-			}
-			*/
 			
 			if (csm.getLogAllPlayerCommands() == true)
 				FC_Bans.plugin.getLogger().info("[Command - " + player.getName() + "] " + event.getMessage());
@@ -363,46 +362,7 @@ public class FC_Bans extends JavaPlugin
 
 /*
 
-Version 0.4:
 
-* Fixed issue where my command blocker for muted players was overriding all commands that started with the blocked commands.
-* Modularized and optimized code massively. Was really having a ton of fun with it this time. Spent a few hours just trying to make the code the best it could be. Trying to get on dat Essentials Level, haha.
-* Check for permanent punishements are now stored in configuration as a boolean.
-* Bad duration input should be correctly handled and a nice message displayed on fails. Success = warning list will be shown.
-* Fixed unban date not being correct.
-* No more double-logging for blocked commands.
-* Fixed /warn check [name] to actually work now.
-* Confirmation given on /warn remove command.
-* Warning list for /warn command is only shown in /warn [name] command now.
-* Removed plugin.yml permissions. Were just yucking up my permissions making them not work.
-* Lots of really good output updates for notifying players why they are banned, how long, when players are muted, how long, perma status, on and on.
-
-Version 0.3:
-
-I would like to first and foremost say that this version is HIGHLY EXPERIMENTAL. I have tested as much as I can, I really have, but I added so much stuff, that it is possible something isn't working. Anyway, there are tons of features in this version, as promised. Suggestions are welcome and please make tickets for bugs. Thanks :D
-
-* New warning boolean - "type" which holds the type of ban. Time is also put in its own field. Warning level was moved down.
-* Can't mute,ban already muted,banned players.
-* New fc_bans.mute.check and fc_bans.ban.check fc_Bans.warn.check permissions.
-* Standard error library created to optimize and sync code greatly.
-* Updated warning list format to be a lot more useful now.
-* Add warning delete sub-command, requires fc_bans.warn.delete to use.
-* Updated the length that you can mute/ban for. Using a new far better method with Calenders that I should have just used, but was lazy. :P
-* Any ban that is 52ws+ is considered permanent. If you want to unban a permanent ban then use the /unban command.
-* /ban remove [name] command added. Requires fc_bans.ban.remove permission node.
-* /mute remove [name] command added. Requires fc_bans.mute.remove permission node.
-* New permission node, FC_Bans.user. Required to view help. Will have other uses later possibly.
-* New permissions node, FC_Bans.immune. Makes you immune to kicks/bans/warns/mutes.
-* New permission node, FC_Bans.admin. Gives access to every command. You still need the immune command with this, or you can just use fc_bans.*. Will be needed to change configuration settings with /fc_bans command.
-* Configuration settings are now in, also made sure that userWarnings can be updated through config in the future.
-* New Command fc_bans global to accompany global announcements setting. Needs fc_bans.admin to use and see in help.
-* /ban ip [name] [duration] [reasons] is now usable.
-* Can no longer message muted players either. A message is sent back telling the person that the person they are trying to chat to is muted.
-* Brand new color scheme. :) Used the sexy GRAY + YELLOW SCHEME. Seeing that bold yellow WILL, and I mean WILL make you jizz yourself. 100% chance.
-* Help command is made a lot better, use it... and use it often!
-* Next version will offer a way to export bans, but for now nothing implemented. 
-
-Please delete your configuration file when upgrading. You won't have to do this in the future unless I need to do major code rewrites, which even still, you probably wouldn't have to. :)
 
  */
 

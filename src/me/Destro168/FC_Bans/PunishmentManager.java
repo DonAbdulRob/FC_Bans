@@ -48,7 +48,9 @@ public class PunishmentManager
 	public boolean getIsPermaMuted() { return profile.getBoolean(playerPath + "isPermaMuted"); }
 	public boolean getIsIpBanned() { return profile.getBoolean(playerPath + "isIpBanned"); }
 	public boolean getIsPermaFrozen() { return profile.getBoolean(playerPath + "isPermaFrozen"); }
-	public String getIp() { return profile.getString(playerPath + "ip"); }
+	public String getIp() { return profile.getString(playerPath + "ip"); }		//Used primarily for bukkit ban synchronization.
+	public String getMostRecentBanGiver() { try { return profile.getString(playerPath + "mostRecentBanGiver"); } catch (NullPointerException e) { return "[outdated]"; } }
+	public String getMostRecentBanReason() { try { return profile.getString(playerPath + "mostRecentBanReason"); } catch (NullPointerException e) { return "[outdated]"; } }
 	
 	public void setWarningReason(int x, String y) { profile.set(playerPath + x + ".reason", y); }
 	public void setWarningTime(int x, String y) { profile.set(playerPath + x + ".time", y); }
@@ -66,6 +68,8 @@ public class PunishmentManager
 	public void setIsIpBanned(boolean x) { profile.set(playerPath + "isIpBanned", x); }
 	public void setIsPermaFrozen(boolean x) { profile.set(playerPath + "isPermaFrozen", x); }
 	public void setIp(String x) { profile.set(playerPath + "ip", x); }
+	public void setMostRecentBanGiver(String x) { profile.set(playerPath + "mostRecentBanGiver", x); }
+	public void setMostRecentBanReason(String x) { profile.set(playerPath + "mostRecentBanReason", x); }
 	
 	public void deleteWarning(int x) { profile.set(playerPath + x, null); }
 	public String getUnbanDateNormal() { if (getUnbanDate() > 0) return dfm.format(getUnbanDate()); else return "Not banned"; }
@@ -86,7 +90,7 @@ public class PunishmentManager
 			playerName = playerName_;
 		
 		//Use player name before modified for real name.
-		profile = new CustomConfigurationManager(FC_Bans.plugin.getDataFolder().getAbsolutePath(), playerName);
+		profile = new CustomConfigurationManager(FC_Bans.plugin.getDataFolder().getAbsolutePath() + "\\userinfo", playerName);
 		
 		//Set the playerPath.
 		playerPath = "FC_Bans.";
@@ -615,11 +619,19 @@ public class PunishmentManager
 		
 		if (type == 1)
 		{
+			boolean displayWarnGiverName = csm.getDisplayWarnGiverNameOnPunish();
+			
+			if (displayWarnGiverName)
+			{
+				setMostRecentBanGiver(punishGiver);
+				setMostRecentBanReason(reason);
+			}
+			
 			if (player != null)
 			{
 				if (player.isOnline() == true)
 				{
-					if (csm.getDisplayWarnGiverNameOnPunish() == true)
+					if (displayWarnGiverName)
 						player.kickPlayer("You have been banned by " + punishGiver + ". Length: " + durationTimeText + " Reason: " + reason);
 					else
 						player.kickPlayer("You have been banned for. Length: " + durationTimeText + ". Reason: " + reason);

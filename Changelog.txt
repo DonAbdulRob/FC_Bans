@@ -1,3 +1,11 @@
+Version 2.2:
+
+- Built CB release - Build #2377 - CB 1.3.2-R2.0
+- Add Ban giver/reason that players can see on relog attempts when banned. Requires setting -> DisplayWarnGiverNameOnPunish to be enabled.
+- Abandoned warning that player is muted when you send commands to them. The old event.getRecips is decapritated and I can't find a suitable replacement. Maybe I'll add one day if I find one but until then abandoned.
+- Fixed somewhat confusing issue where trying to ban offline players would would be impossible.
+- Added a few older changelogs that I found.
+
 Version 2.1:
 
 - Corrected errors where commands were not returning. I don't know how the return statements got removed but they were.
@@ -48,3 +56,44 @@ Changelog 1.11:
 * When players log on, those that can see warnings will be alerted to the current mute/freeze status of players.
 * Realized that I was using the player ips section for the recording of multi-account users, DURR. Don't delete that section and it's called "PlayerIps" again. Please just rename the section to "PlayerIps" if you want to preserve your old player names. Thank you and sorry about this, it's just a small fix.
 * Didn't make a changelog sadly before so this is all you get. There are many more changes, just not listed. Will be actually making good changelogs from now on though. :D
+
+Version 0.4:
+
+* Fixed issue where my command blocker for muted players was overriding all commands that started with the blocked commands.
+* Modularized and optimized code massively. Was really having a ton of fun with it this time. Spent a few hours just trying to make the code the best it could be. Trying to get on dat Essentials Level, haha.
+* Check for permanent punishements are now stored in configuration as a boolean.
+* Bad duration input should be correctly handled and a nice message displayed on fails. Success = warning list will be shown.
+* Fixed unban date not being correct.
+* No more double-logging for blocked commands.
+* Fixed /warn check [name] to actually work now.
+* Confirmation given on /warn remove command.
+* Warning list for /warn command is only shown in /warn [name] command now.
+* Removed plugin.yml permissions. Were just yucking up my permissions making them not work.
+* Lots of really good output updates for notifying players why they are banned, how long, when players are muted, how long, perma status, on and on.
+
+Version 0.3:
+
+I would like to first and foremost say that this version is HIGHLY EXPERIMENTAL. I have tested as much as I can, I really have, but I added so much stuff, that it is possible something isn't working. Anyway, there are tons of features in this version, as promised. Suggestions are welcome and please make tickets for bugs. Thanks :D
+
+* New warning boolean - "type" which holds the type of ban. Time is also put in its own field. Warning level was moved down.
+* Can't mute,ban already muted,banned players.
+* New fc_bans.mute.check and fc_bans.ban.check fc_Bans.warn.check permissions.
+* Standard error library created to optimize and sync code greatly.
+* Updated warning list format to be a lot more useful now.
+* Add warning delete sub-command, requires fc_bans.warn.delete to use.
+* Updated the length that you can mute/ban for. Using a new far better method with Calenders that I should have just used, but was lazy. :P
+* Any ban that is 52ws+ is considered permanent. If you want to unban a permanent ban then use the /unban command.
+* /ban remove [name] command added. Requires fc_bans.ban.remove permission node.
+* /mute remove [name] command added. Requires fc_bans.mute.remove permission node.
+* New permission node, FC_Bans.user. Required to view help. Will have other uses later possibly.
+* New permissions node, FC_Bans.immune. Makes you immune to kicks/bans/warns/mutes.
+* New permission node, FC_Bans.admin. Gives access to every command. You still need the immune command with this, or you can just use fc_bans.*. Will be needed to change configuration settings with /fc_bans command.
+* Configuration settings are now in, also made sure that userWarnings can be updated through config in the future.
+* New Command fc_bans global to accompany global announcements setting. Needs fc_bans.admin to use and see in help.
+* /ban ip [name] [duration] [reasons] is now usable.
+* Can no longer message muted players either. A message is sent back telling the person that the person they are trying to chat to is muted.
+* Brand new color scheme. :) Used the sexy GRAY + YELLOW SCHEME. Seeing that bold yellow WILL, and I mean WILL make you jizz yourself. 100% chance.
+* Help command is made a lot better, use it... and use it often!
+* Next version will offer a way to export bans, but for now nothing implemented. 
+
+Please delete your configuration file when upgrading. You won't have to do this in the future unless I need to do major code rewrites, which even still, you probably wouldn't have to. :)

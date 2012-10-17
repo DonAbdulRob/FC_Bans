@@ -18,7 +18,7 @@ public class ConfigSettingsManager
 	public ConfigSettingsManager()
 	{
 		plugin = FC_Bans.plugin;
-		ccm = new CustomConfigurationManager(FC_Bans.plugin.getDataFolder().getAbsolutePath(), "%BanSpecialCode%");
+		ccm = new CustomConfigurationManager(FC_Bans.plugin.getDataFolder().getAbsolutePath(), "ipLogging");
 	}
 	
 	//Gets
@@ -187,6 +187,12 @@ public class ConfigSettingsManager
 			setEnableBukkitBanSynergy(false);
 		}
 		
+		if (getVersion() < 2.2)
+		{
+			//Update the version.
+			setVersion(2.2);
+		}
+		
 		//Save config
 		plugin.saveConfig();
 	}
@@ -225,8 +231,9 @@ public class ConfigSettingsManager
 				if (secondRecord.isBanned() == true)
 					isBanned = true;
 				
-				if (secondRecord.isMuted() == true)
-					isBanned = true;
+				//TODO - remvoe
+				//if (secondRecord.isMuted() == true)
+				//	isBanned = true;
 			}
 		}
 		

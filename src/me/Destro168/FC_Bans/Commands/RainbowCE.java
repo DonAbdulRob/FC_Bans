@@ -409,13 +409,7 @@ public class RainbowCE implements CommandExecutor
 		//Get the record from the first passed argument.
 		record = new PunishmentManager(target);
 		
-		//If the players ip isn't logged, then we log it.
-		if (record.getIp() == null)
-		{
-			//The player should always be online OR the ip is recorded on leaves, since the ip is null, the player must be online. <- Sexy programmer logic right there. So store ip.
-			record.setIp(Bukkit.getServer().getPlayer(arg1).getAddress().getAddress().getHostAddress());
-		}
-		
+		//If the player is banned already, warn the banner that the target is already banned.
 		if (record.isBanned() == true)
 			return msgLib.errorAlreadyPunished();
 		
