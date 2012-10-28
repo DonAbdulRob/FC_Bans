@@ -231,9 +231,8 @@ public class ConfigSettingsManager
 				if (secondRecord.isBanned() == true)
 					isBanned = true;
 				
-				//TODO - remvoe
-				//if (secondRecord.isMuted() == true)
-				//	isBanned = true;
+				if (secondRecord.isMuted() == true)
+					isBanned = true;
 			}
 		}
 		
