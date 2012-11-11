@@ -90,7 +90,7 @@ public class PunishmentManager
 			playerName = playerName_;
 		
 		//Use player name before modified for real name.
-		profile = new CustomConfigurationManager(FC_Bans.plugin.getDataFolder().getAbsolutePath() + "\\userinfo", playerName);
+		profile = new CustomConfigurationManager(FC_Bans.plugin.getDataFolder().getAbsolutePath() + "/userinfo", playerName);
 		
 		//Set the playerPath.
 		playerPath = "FC_Bans.";
