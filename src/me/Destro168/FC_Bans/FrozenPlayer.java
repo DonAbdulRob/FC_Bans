@@ -68,7 +68,7 @@ public class FrozenPlayer
 		frozenLocation = new Location(playerWorld, player.getLocation().getX(), playerY, player.getLocation().getZ(),
 				player.getLocation().getYaw(), player.getLocation().getPitch());
 		
-		moveTID = Bukkit.getScheduler().scheduleAsyncRepeatingTask(FC_Bans.plugin, new Runnable() 
+		moveTID = Bukkit.getScheduler().scheduleSyncRepeatingTask(FC_Bans.plugin, new Runnable() 
 		{
 			public void run()
 			{

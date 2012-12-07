@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import me.Destro168.FC_Bans.Commands.RainbowCE;
 import me.Destro168.FC_Bans.Utils.ConfigSettingsManager;
 import me.Destro168.FC_Bans.Utils.FC_BansPermissions;
-import me.Destro168.Messaging.MessageLib;
+import me.Destro168.FC_Suite_Shared.Messaging.MessageLib;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

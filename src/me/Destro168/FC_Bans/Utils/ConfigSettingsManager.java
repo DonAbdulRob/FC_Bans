@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-import me.Destro168.ConfigManagers.CustomConfigurationManager;
+import me.Destro168.FC_Suite_Shared.ConfigManagers.FileConfigurationWrapper;
 import me.Destro168.FC_Bans.FC_Bans;
 import me.Destro168.FC_Bans.PunishmentManager;
 
@@ -13,20 +13,20 @@ public class ConfigSettingsManager
 {
 	private FC_Bans plugin;
 	private FileConfiguration config;
-	private CustomConfigurationManager ccm;
+	private FileConfigurationWrapper fcw;
 	
 	public ConfigSettingsManager()
 	{
 		plugin = FC_Bans.plugin;
-		ccm = new CustomConfigurationManager(FC_Bans.plugin.getDataFolder().getAbsolutePath(), "ipLogging");
+		fcw = new FileConfigurationWrapper(FC_Bans.plugin.getDataFolder().getAbsolutePath(), "ipLogging");
 	}
 	
 	//Gets
-	public String getName(String ip) { return ccm.getString("PlayerIps." + ip); }
+	public String getName(String ip) { return fcw.getString("PlayerIps." + ip); }
 	private void setName(String ip, String name) 
 	{
 		if (storeAllPlayerIps())
-			ccm.set("PlayerIps." + ip, name);
+			fcw.set("PlayerIps." + ip, name);
 	}
 	
 	public double getVersion() { config = plugin.getConfig(); return config.getDouble("Version"); }
@@ -187,10 +187,10 @@ public class ConfigSettingsManager
 			setEnableBukkitBanSynergy(false);
 		}
 		
-		if (getVersion() < 2.31)
+		if (getVersion() < 2.4)
 		{
 			//Update the version.
-			setVersion(2.31);
+			setVersion(2.4);
 		}
 		
 		//Save config

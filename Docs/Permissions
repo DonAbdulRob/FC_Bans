@@ -1,0 +1,18 @@
+~ FC_Bans Permissions ~
+
+Command Permissions:
+The command permissions listed grant permission to use the associated command. Use /fc_bans in-game to see the help for what commands are what.
+
+kick: FC_Bans.kick
+ban: FC_Bans.ban, FC_bans.ban.check, FC_Bans.ban.remove
+warn: FC_Bans.warn, FC_Bans.war.check, FC_Bans.warn.remove
+mute: FC_Bans.mute, FC_Bans.mute.check, FC_Bans.mute.remove
+freeze: FC_Bans.freeze, FC_Bans. freeze.check, FC_Bans. freeze.remove
+check: FC_Bans.check 
+
+Other permissions:
+
+FC_Bans.user - Required to view the help. 
+FC_Bans.immune - Unable to be punished. 
+FC_Bans.viewjoinwarnings - Gives you permission to view warning levels of players when they join. 
+FC_Bans.admin - Allows access to every command and has everything that FC_bans.user has. Lets you use config editing commands under /fc_bans [configoption] [newvalue], and pretty much everything.

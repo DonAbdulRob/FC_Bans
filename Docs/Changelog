@@ -1,3 +1,16 @@
+~ FC_Bans Changelog ~
+
+Version 2.4:
+
+This version is being released for compatibility with FC_Suite_Shared 2.0
+
+Installation:
+- FC_Suite_Shared is now it's own seperate plugin! Check it out -> http://dev.bukkit.org/server-mods/fc_suite_shared/
+
+Todo:
+- Pvp logger for FC_Bans that autowarns, optional punishment.
+- Automatic reason append for bans.
+
 Version 2.31:
 
 - Check FC_Suite_Shared changelog!

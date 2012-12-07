@@ -1,6 +1,6 @@
 name: FC_Bans
 main: me.Destro168.FC_Bans.FC_Bans
-version: 2.31
+version: 2.4
 description: Ban/Warn plugin
 commands:
     ban:

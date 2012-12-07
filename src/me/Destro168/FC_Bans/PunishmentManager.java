@@ -6,12 +6,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.Destro168.ConfigManagers.CustomConfigurationManager;
+import me.Destro168.FC_Suite_Shared.ConfigManagers.FileConfigurationWrapper;
 import me.Destro168.FC_Bans.Utils.ConfigSettingsManager;
-import me.Destro168.Messaging.BroadcastLib;
-import me.Destro168.Messaging.MessageLib;
-import me.Destro168.TimeUtils.DateManager;
-import me.Destro168.TimeUtils.TimeStringParser;
+import me.Destro168.FC_Suite_Shared.Messaging.BroadcastLib;
+import me.Destro168.FC_Suite_Shared.Messaging.MessageLib;
+import me.Destro168.FC_Suite_Shared.TimeUtils.DateManager;
+import me.Destro168.FC_Suite_Shared.TimeUtils.TimeStringParser;
 import me.Destro168.FC_Suite_Shared.NameMatcher;
 
 import org.bukkit.Bukkit;
@@ -24,7 +24,7 @@ public class PunishmentManager
 {
 	//Variable declarations
 	private final int MAX_WARNINGS = 100;
-	private CustomConfigurationManager profile;
+	private FileConfigurationWrapper playerProfile;
 	private final DateFormat dfm = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private String playerName;
 	private String playerPath;
@@ -33,45 +33,45 @@ public class PunishmentManager
 	public void setName(String x) { playerName = x; }
 	public String getName() { return playerName; }
 	
-	public String getWarningReason(int x) { return profile.getString(playerPath + x + ".reason"); }
-	public String getWarningTime(int x) { return profile.getString(playerPath + x + ".time"); }
-	public String getWarningLength(int x) { return profile.getString(playerPath + x + ".length"); }
-	public String getWarningType(int x) { return profile.getString(playerPath + x + ".type"); }
-	public String getWarnGiverName(int x) { return profile.getString(playerPath + x + ".warnGiverName"); }
-	public int getWarningLevel(int x) { return profile.getInt(playerPath + x + ".level"); }
+	public String getWarningReason(int x) { return playerProfile.getString(playerPath + x + ".reason"); }
+	public String getWarningTime(int x) { return playerProfile.getString(playerPath + x + ".time"); }
+	public String getWarningLength(int x) { return playerProfile.getString(playerPath + x + ".length"); }
+	public String getWarningType(int x) { return playerProfile.getString(playerPath + x + ".type"); }
+	public String getWarnGiverName(int x) { return playerProfile.getString(playerPath + x + ".warnGiverName"); }
+	public int getWarningLevel(int x) { return playerProfile.getInt(playerPath + x + ".level"); }
 	
-	public boolean getCreated() { return profile.getBoolean(playerPath + "created"); }
-	public long getUnbanDate() { return profile.getLong(playerPath + "unbanDate"); }
-	public long getUnmuteDate() { return profile.getLong(playerPath + "unmuteDate"); }
-	public long getUnfreezeDate() { return profile.getLong(playerPath + "unfreezeDate"); }
-	public boolean getIsPermaBanned() { return profile.getBoolean(playerPath + "isPermaBanned"); }
-	public boolean getIsPermaMuted() { return profile.getBoolean(playerPath + "isPermaMuted"); }
-	public boolean getIsIpBanned() { return profile.getBoolean(playerPath + "isIpBanned"); }
-	public boolean getIsPermaFrozen() { return profile.getBoolean(playerPath + "isPermaFrozen"); }
-	public String getIp() { return profile.getString(playerPath + "ip"); }		//Used primarily for bukkit ban synchronization.
-	public String getMostRecentBanGiver() { try { return profile.getString(playerPath + "mostRecentBanGiver"); } catch (NullPointerException e) { return "[outdated]"; } }
-	public String getMostRecentBanReason() { try { return profile.getString(playerPath + "mostRecentBanReason"); } catch (NullPointerException e) { return "[outdated]"; } }
+	public boolean getCreated() { return playerProfile.getBoolean(playerPath + "created"); }
+	public long getUnbanDate() { return playerProfile.getLong(playerPath + "unbanDate"); }
+	public long getUnmuteDate() { return playerProfile.getLong(playerPath + "unmuteDate"); }
+	public long getUnfreezeDate() { return playerProfile.getLong(playerPath + "unfreezeDate"); }
+	public boolean getIsPermaBanned() { return playerProfile.getBoolean(playerPath + "isPermaBanned"); }
+	public boolean getIsPermaMuted() { return playerProfile.getBoolean(playerPath + "isPermaMuted"); }
+	public boolean getIsIpBanned() { return playerProfile.getBoolean(playerPath + "isIpBanned"); }
+	public boolean getIsPermaFrozen() { return playerProfile.getBoolean(playerPath + "isPermaFrozen"); }
+	public String getIp() { return playerProfile.getString(playerPath + "ip"); }		//Used primarily for bukkit ban synchronization.
+	public String getMostRecentBanGiver() { try { return playerProfile.getString(playerPath + "mostRecentBanGiver"); } catch (NullPointerException e) { return "[outdated]"; } }
+	public String getMostRecentBanReason() { try { return playerProfile.getString(playerPath + "mostRecentBanReason"); } catch (NullPointerException e) { return "[outdated]"; } }
 	
-	public void setWarningReason(int x, String y) { profile.set(playerPath + x + ".reason", y); }
-	public void setWarningTime(int x, String y) { profile.set(playerPath + x + ".time", y); }
-	public void setWarningLength(int x, String y) { profile.set(playerPath + x + ".length", y); }
-	public void setWarningType(int x, String y) { profile.set(playerPath + x + ".type", y); }
-	public void setWarnGiverName(int x, String y) { profile.set(playerPath + x + ".warnGiverName", y); }
-	public void setWarningLevel(int x, int y) { profile.set(playerPath + x + ".level", y); }
+	public void setWarningReason(int x, String y) { playerProfile.set(playerPath + x + ".reason", y); }
+	public void setWarningTime(int x, String y) { playerProfile.set(playerPath + x + ".time", y); }
+	public void setWarningLength(int x, String y) { playerProfile.set(playerPath + x + ".length", y); }
+	public void setWarningType(int x, String y) { playerProfile.set(playerPath + x + ".type", y); }
+	public void setWarnGiverName(int x, String y) { playerProfile.set(playerPath + x + ".warnGiverName", y); }
+	public void setWarningLevel(int x, int y) { playerProfile.set(playerPath + x + ".level", y); }
 	
-	public void setCreated(boolean x) { profile.set(playerPath + "created", x); }
-	public void setUnbanDate(long x) { profile.set(playerPath + "unbanDate", x); }
-	public void setUnmuteDate(long x) { profile.set(playerPath + "unmuteDate", x); }
-	public void setUnfreezeDate(long x) { profile.set(playerPath + "unfreezeDate", x); }
-	public void setIsPermaBanned(boolean x) { profile.set(playerPath + "isPermaBanned", x); }
-	public void setIsPermaMuted(boolean x) { profile.set(playerPath + "isPermaMuted", x); }
-	public void setIsIpBanned(boolean x) { profile.set(playerPath + "isIpBanned", x); }
-	public void setIsPermaFrozen(boolean x) { profile.set(playerPath + "isPermaFrozen", x); }
-	public void setIp(String x) { profile.set(playerPath + "ip", x); }
-	public void setMostRecentBanGiver(String x) { profile.set(playerPath + "mostRecentBanGiver", x); }
-	public void setMostRecentBanReason(String x) { profile.set(playerPath + "mostRecentBanReason", x); }
+	public void setCreated(boolean x) { playerProfile.set(playerPath + "created", x); }
+	public void setUnbanDate(long x) { playerProfile.set(playerPath + "unbanDate", x); }
+	public void setUnmuteDate(long x) { playerProfile.set(playerPath + "unmuteDate", x); }
+	public void setUnfreezeDate(long x) { playerProfile.set(playerPath + "unfreezeDate", x); }
+	public void setIsPermaBanned(boolean x) { playerProfile.set(playerPath + "isPermaBanned", x); }
+	public void setIsPermaMuted(boolean x) { playerProfile.set(playerPath + "isPermaMuted", x); }
+	public void setIsIpBanned(boolean x) { playerProfile.set(playerPath + "isIpBanned", x); }
+	public void setIsPermaFrozen(boolean x) { playerProfile.set(playerPath + "isPermaFrozen", x); }
+	public void setIp(String x) { playerProfile.set(playerPath + "ip", x); }
+	public void setMostRecentBanGiver(String x) { playerProfile.set(playerPath + "mostRecentBanGiver", x); }
+	public void setMostRecentBanReason(String x) { playerProfile.set(playerPath + "mostRecentBanReason", x); }
 	
-	public void deleteWarning(int x) { profile.set(playerPath + x, null); }
+	public void deleteWarning(int x) { playerProfile.set(playerPath + x, null); }
 	public String getUnbanDateNormal() { if (getUnbanDate() > 0) return dfm.format(getUnbanDate()); else return "Not banned"; }
 	public String getUnmuteDateNormal() { if (getUnmuteDate() > 0) return dfm.format(getUnmuteDate()); else return "Not Muted"; }
 	public String getUnfreezeDateNormal() { if (getUnfreezeDate() > 0) return dfm.format(getUnfreezeDate()); else return "Not Frozen"; }
@@ -90,7 +90,7 @@ public class PunishmentManager
 			playerName = playerName_;
 		
 		//Use player name before modified for real name.
-		profile = new CustomConfigurationManager(FC_Bans.plugin.getDataFolder().getAbsolutePath() + "/userinfo", playerName);
+		playerProfile = new FileConfigurationWrapper(FC_Bans.plugin.getDataFolder().getAbsolutePath() + "/userinfo", playerName);
 		
 		//Set the playerPath.
 		playerPath = "FC_Bans.";

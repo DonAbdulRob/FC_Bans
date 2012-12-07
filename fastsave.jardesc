@@ -12,11 +12,9 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <file path="/FC_Bans/fastsave.jardesc"/>
-        <file path="/FC_Bans/Changelog.txt"/>
-        <file path="/FC_Bans/plugin.yml"/>
-        <file path="/FC_Bans/README.md"/>
         <file path="/FC_Bans/.project"/>
         <file path="/FC_Bans/.classpath"/>
+        <file path="/FC_Bans/plugin.yml"/>
         <javaElement handleIdentifier="=FC_Bans/src"/>
     </selectedElements>
 </jardesc>
