@@ -12,6 +12,7 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <file path="/FC_Bans/fastsave.jardesc"/>
+        <folder path="/FC_Bans/Docs"/>
         <file path="/FC_Bans/.project"/>
         <file path="/FC_Bans/.classpath"/>
         <file path="/FC_Bans/plugin.yml"/>

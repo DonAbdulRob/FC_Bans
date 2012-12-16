@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import me.Destro168.FC_Bans.Commands.RainbowCE;
 import me.Destro168.FC_Bans.Utils.ConfigSettingsManager;
 import me.Destro168.FC_Bans.Utils.FC_BansPermissions;
+import me.Destro168.FC_Suite_Shared.AutoUpdate;
 import me.Destro168.FC_Suite_Shared.Messaging.MessageLib;
 
 import org.bukkit.Bukkit;
@@ -74,6 +75,12 @@ public class FC_Bans extends JavaPlugin
 		getServer().getPluginManager().registerEvents(new BlockPlaceListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
+		
+		try {
+			new AutoUpdate(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		//Start task to MOVE ALL OF THE PLAYERS! MUAHAHA
 		this.getLogger().info("Enabled Successfully.");

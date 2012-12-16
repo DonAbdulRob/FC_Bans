@@ -1,5 +1,11 @@
 ~ FC_Bans Changelog ~
 
+Version 2.41:
+
+- Compatability update with FC_Suite_Shared.
+- Docs readded to jar file.
+- Added in autoupdate.
+
 Version 2.4:
 
 This version is being released for compatibility with FC_Suite_Shared 2.0
