@@ -1,0 +1,63 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      ___           ___                    ___           ___                         ___           ___   
+     /\__\         /\__\                  /\__\         /\__\                       /\  \         /\  \  
+    /:/ _/_       /:/  /                 /:/ _/_       /:/ _/_         ___          \:\  \       /::\  \ 
+   /:/ /\__\     /:/  /                 /:/ /\  \     /:/ /\__\       /\__\          \:\  \     /:/\:\__\
+  /:/ /:/  /    /:/  /  ___            /:/ /::\  \   /:/ /:/ _/_     /:/  /      ___  \:\  \   /:/ /:/  /
+ /:/_/:/  /    /:/__/  /\__\          /:/_/:/\:\__\ /:/_/:/ /\__\   /:/__/      /\  \  \:\__\ /:/_/:/  / 
+ \:\/:/  /     \:\  \ /:/  /          \:\/:/ /:/  / \:\/:/ /:/  /  /::\  \      \:\  \ /:/  / \:\/:/  /  
+  \::/__/       \:\  /:/  /            \::/ /:/  /   \::/_/:/  /  /:/\:\  \      \:\  /:/  /   \::/__/   
+   \:\  \        \:\/:/  /              \/_/:/  /     \:\/:/  /   \/__\:\  \      \:\/:/  /     \:\  \   
+    \:\__\        \::/  /                 /:/  /       \::/  /         \:\__\      \::/  /       \:\__\  
+     \/__/         \/__/                  \/__/         \/__/           \/__/       \/__/         \/__/  
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Table of Contents:
+I: Introduction
+    a: Command Usage
+	b. Duration Command Argument Help
+II: Configuring the Configuration File
+III. Position On Offline-Mode Support
+	a. Regarding Player Count:
+	b. Server Bounty Generation Rules
+	c. Anti-Spawn Camping Feature
+
+I: Introduction
+
+	This is the help for FC_Bans. This help will detail all the steps to configure this plugin.
+
+a. Command Usage
+
+	The base command for the plugin is /fc_Bans. This command will show you the help for the plugin. The command format should be pretty straightforward and both fc_bans 2 and the video show you how to enter duration. However to help those that may be a bit confused, here is a breakdown of the “[duration]” command argument.
+
+b. Duration Command Argument Help
+
+	The duration command argument is required if you want to put in a reason for your punishment or if you would like to temporarily apply a punishment. The following rules will explain how to get the effect that you want for your particular punishment.
+
+	Permanent Punishments: Format = /[punishment] [playerName] OR /[ punishment] [playerName] perm. The rule is that you can put anything you want after perm and it won’t matter, as the command only looks for ‘perm’. So you can put permanent, permajib, permoijeioaf if you really want and it won’t matter.
+	Temporary Punishments: Format = /[punishment] [playerName] [duration]. The duration is a special string that you use to supply how long you want a punishment to be. The ordering is that you must put down a number followed by the first letter of the duration you want that number to last. So if you put down 5s, then that is five seconds. 5w5s is five weeks five seconds. The ordering doesn’t matter and you can put down any size number, such as 55094s. However, any temporary punishment that exceeds 52 weeks is automatically made permanent. The abbreviations for time durations are -> second = (s), minute = (m), hour = (h), day = (d), week = (d) and there is no month or year options.
+	
+	As a small technical note, if you forget to put in a duration and simply add a reason to your command, then the duration will default to permanent and the reason will lose one word.
+
+II: Configuring the Configuration File
+
+- The warning level options are purely optional to setup. I feel that my default scheme is pretty solid but if you would like something different go for it. Warning levels are a purely cosmetic feature that allows you to keep track of the severity of past punishments that a player has had in the past.
+
+- The Ban, Mute, etc. KeyWord settings allow you to change the key word used by FC_Bans to handle punishments. Permissions will NOT change based on what the key word is. The KeyWord setting only changes what command you type to access the command. In addition to changing the keyword, you HAVE to change the command name in the plugin.yml of the jar. Just use an unzipping plugin on FC_Bans.jar, extract the jar, and edit the command name to the new name/keyword you want, copy it back into the archive, and you should be good to go.
+
+- The AutoShowWarningList setting will determine whether or not a players past warnings will be listed to the punisher when punishments are dealt out.
+
+- The AutoPunishType config option is currently only used for one thing, punishing players when they attempt to use a blocked command while muted. To disable any type of automatic punishment, set the AutoPunishTime to '0'. The different values for AutoPunishType are -> (0 = Warn, 1 = Ban, 2 = Mute, 3 kick, 4 freeze). Please note that you MUST put in a time period of any length for warn/kick to work. Putting '0' in disables all automatic punishing settings. 'perm’ also works for autopunishtype as well if you really want to automatically permanently punish somebody for something.
+
+- The enableBukkitBansSynergy is a new configuration option as of 2.0 that that everybody can use. Bans and ip-bans will be stored in their respective bukkit managed files with this feature enabled. This means that you can uninstall my plugin without losing any bans, of course all bans would become permanent though as there would be nothing to remove them. The downside is that players will no longer receive my custom disconnect messages when they are banned from the server, so by default it is disabled. If you can potentially see yourself dropping my plugin at some point in the future please leave feedback when you do!, and also enable this setting.
+
+- The DisplayWarnGiverNameOnPunish allows you to enable or disable whether or not to display person who issues a punishments name to the receiver of the punishment. This setting trickles down into several areas, such as, if disabled, when players are banned, and if bukkit ban sync is disabled, players will not see the issuer of the ban when they attempt to reconnect. However, if enabled, then they will.
+
+- The debugMode setting should not really be used normally. If you have an issue, the person dealing with your ticket may ask for you to enable it and take some steps to solve it. Don't worry about it really though.
+
+- The enableBukkitBanSynergy setting is used to enable or disable bukkit ban synchonization. This means that when enabled, when you ban a player that player will also be banned in the bukkit files as well. The pros of using this are that you will always have a backup of player bans when they are ip-banned or normal banned. The consequence of having this is that players will never be able to see the custom join messages telling them when their ban ends, the reasoning, and punisher. You just have to weigh whether or not you want this enabled or not.
+
+III. Position On Offline-Mode Support
+
+- Offline-mode has the potential to cause random features to not break. I have done my best to make as much as I can work, but not everything will work 100%. For example, freezing should not work. However, for some reason it was working on another offline-mode server so I have no idea when it will and will not work for offline-mode servers. Banning of players will work now via ip-bans and normal bans if you have enableBukkitBansSynergy enabled. All multi-accounting prevention features are disabled on offline-mode servers.

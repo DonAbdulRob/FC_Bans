@@ -17,7 +17,7 @@ import me.Destro168.FC_Suite_Shared.NameMatcher;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.command.ColouredConsoleSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class PunishmentManager
@@ -270,8 +270,8 @@ public class PunishmentManager
 		//Set up the messageLib to who we are sending the message to.
 		if (sender instanceof Player)
 			msgLib = new MessageLib((Player) sender);
-		else if (sender instanceof ColouredConsoleSender)
-			msgLib = new MessageLib((ColouredConsoleSender) sender);
+		else if (sender instanceof ConsoleCommandSender)
+			msgLib = new MessageLib((ConsoleCommandSender) sender);
 		else
 			return;
 		
@@ -732,7 +732,7 @@ public class PunishmentManager
 		msgLib.standardMessage(playerName + " will be unbanned on: " + getCorrectUnbanDate());
 	}
 	
-	public void sendIsBanned(ColouredConsoleSender messagePlayer)
+	public void sendIsBanned(ConsoleCommandSender messagePlayer)
 	{
 		MessageLib msgLib = new MessageLib(messagePlayer);
 		msgLib.standardMessage(playerName + " will be unbanned on: " + getCorrectUnbanDate());
@@ -744,7 +744,7 @@ public class PunishmentManager
 		msgLib.standardMessage(playerName + " will be unmuted on: " + getCorrectUnmuteDate());
 	}
 	
-	public void sendIsMuted(ColouredConsoleSender messagePlayer)
+	public void sendIsMuted(ConsoleCommandSender messagePlayer)
 	{
 		MessageLib msgLib = new MessageLib(messagePlayer);
 		msgLib.standardMessage(playerName + " will be unmuted on: " + getCorrectUnmuteDate());
@@ -756,7 +756,7 @@ public class PunishmentManager
 		msgLib.standardMessage(playerName + " will be unfrozen on: " + getCorrectUnfreezeDate());
 	}
 	
-	public void sendIsFrozen(ColouredConsoleSender messagePlayer)
+	public void sendIsFrozen(ConsoleCommandSender messagePlayer)
 	{
 		MessageLib msgLib = new MessageLib(messagePlayer);
 		msgLib.standardMessage(playerName + " will be unfrozen on: " + getCorrectUnfreezeDate());

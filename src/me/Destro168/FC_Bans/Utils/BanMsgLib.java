@@ -2,34 +2,29 @@ package me.Destro168.FC_Bans.Utils;
 
 import me.Destro168.FC_Suite_Shared.Messaging.MessageLib;
 
-import org.bukkit.craftbukkit.command.ColouredConsoleSender;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class BanMsgLib extends MessageLib
 {
+	CommandSender sender;
+	
 	Player player;
-	ColouredConsoleSender console;
+	ConsoleCommandSender console;
 	
 	public String getPunisherName()
 	{
-		if (player != null)
+		if (sender instanceof Player)
 			return player.getName();
-		else if (console != null)
-			return "Console";
 		
-		return "Unspecified";
+		return "Console";
 	}
 	
-	public BanMsgLib(Player player_)
+	public BanMsgLib(CommandSender sender_)
 	{
-		super(player_);
-		player = (Player) player_;
-	}
-	
-	public BanMsgLib(ColouredConsoleSender console_)
-	{
-		super(console_);
-		console = (ColouredConsoleSender) console_;
+		super(sender_);
+		sender = sender_;
 	}
 	
 	public boolean isImmune()

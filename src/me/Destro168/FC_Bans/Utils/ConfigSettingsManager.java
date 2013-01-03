@@ -187,10 +187,10 @@ public class ConfigSettingsManager
 			setEnableBukkitBanSynergy(false);
 		}
 		
-		if (getVersion() < 2.41)
+		if (getVersion() < 2.42)
 		{
 			//Update the version.
-			setVersion(2.41);
+			setVersion(2.42);
 		}
 		
 		//Save config

@@ -11,7 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.command.ColouredConsoleSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class RainbowCE implements CommandExecutor
@@ -27,7 +27,7 @@ public class RainbowCE implements CommandExecutor
 	private PunishmentManager record;
 	private BanMsgLib msgLib;
 	private Player player;
-	private ColouredConsoleSender console;
+	private ConsoleCommandSender console;
 	private FC_BansPermissions perms;
 	private BanArgParser bap;
 	private CommandSender sender;
@@ -88,7 +88,7 @@ public class RainbowCE implements CommandExecutor
 	{
 		//Variable Declarations/Initializations
 		bap = new BanArgParser(args2);
-		msgLib = new BanMsgLib(player);
+		msgLib = new BanMsgLib(sender);
 		csm = new ConfigSettingsManager();
 		arg0 = bap.getArg(0);
 		arg1 = bap.getArg(1);
@@ -101,13 +101,13 @@ public class RainbowCE implements CommandExecutor
 		{
 			player = (Player) sender;
 			perms = new FC_BansPermissions(player);
-			msgLib = new BanMsgLib(player);
+			msgLib = new BanMsgLib(sender);
 		}
-		else if (sender instanceof ColouredConsoleSender)
+		else if (sender instanceof ConsoleCommandSender)
 		{
-			console = (ColouredConsoleSender) sender;
+			console = (ConsoleCommandSender) sender;
 			perms = new FC_BansPermissions(true);
-			msgLib = new BanMsgLib(console);
+			msgLib = new BanMsgLib(sender);
 		}
 		else
 		{
