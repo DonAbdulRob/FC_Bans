@@ -2,8 +2,10 @@ package me.Destro168.FC_Bans;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import me.Destro168.FC_Suite_Shared.ConfigManagers.FileConfigurationWrapper;
@@ -17,11 +19,17 @@ import me.Destro168.FC_Suite_Shared.NameMatcher;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class PunishmentManager
 {
+	//Punishment static final ints.
+	public final static int PTYPE_WARN = 0;
+	public final static int PTYPE_BAN = 1;
+	public final static int PTYPE_MUTE = 2;
+	public final static int PTYPE_KICK = 3;
+	public final static int PTYPE_FREEZE = 4;
+	
 	//Variable declarations
 	private final int MAX_WARNINGS = 100;
 	private FileConfigurationWrapper playerProfile;
@@ -101,38 +109,40 @@ public class PunishmentManager
 	
 	public void updatePlayerWarnings()
 	{
-		boolean blankSpot = false;
-		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Rearrange warnings so there are no spaces
 		// - We find a non-blank warning and then check every warning before that to see if it is empty.
 		// - If there is an empty warning, then we want to switch it to that posiiton.
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
+		Map<Integer, Boolean> emptySpaceMap = new HashMap<Integer, Boolean>();
+		boolean mapValue = false;
+		
 		//'i' is the first non-blank warning.
 		for (int i = 0; i < MAX_WARNINGS; i++)
 		{
 			//Store if there is a blank spot.
 			if (getWarningReason(i) == null)
-				blankSpot = true;
-			
-			//Find a nonblank warning.
-			else if (getWarningReason(i) != null)
+				emptySpaceMap.put(i, true);
+			else
+				emptySpaceMap.put(i, false);
+		}
+		
+		//J is the blank warning, move onto j
+		for (int j = 0; j < MAX_WARNINGS; j++)
+		{
+			//Find a non-null warning.
+			if (emptySpaceMap.get(j) == false)
 			{
-				if (blankSpot == true)
+				for (int i = j; i > -1; i--)
 				{
-					//Set to false in the future.
-					blankSpot = false;
+					mapValue = emptySpaceMap.get(i);
 					
-					//J is the blank warning, move onto j
-					for (int j = 0; j < i; j++)
+					if (mapValue == true)
 					{
-						//Find a non-blank warning.
-						if (getWarningReason(j) == null)
-						{
-							moveWarning(j, i);
-							j = i;
-						}
+						moveWarning(i,j);
+						emptySpaceMap.put(i, false);
+						emptySpaceMap.put(j, true);
 					}
 				}
 			}
@@ -259,21 +269,13 @@ public class PunishmentManager
 	public void showWarningList(CommandSender sender)
 	{
 		//Variable Declarations
-		Map<Integer, String> warningMap = new HashMap<Integer, String>();
+		List<Integer> validWarnings = new ArrayList<Integer>();
 		String[] warningArray;
 		String reason = "";
-		MessageLib msgLib;
+		MessageLib msgLib = new MessageLib(sender);
 		
 		//We want to rearrange the warnings before displaying them.
 		updatePlayerWarnings();
-		
-		//Set up the messageLib to who we are sending the message to.
-		if (sender instanceof Player)
-			msgLib = new MessageLib((Player) sender);
-		else if (sender instanceof ConsoleCommandSender)
-			msgLib = new MessageLib((ConsoleCommandSender) sender);
-		else
-			return;
 		
 		//Store all valid warnings.
 		for (int i = 0; i < MAX_WARNINGS; i++)
@@ -282,10 +284,8 @@ public class PunishmentManager
 			
 			if (reason != null)
 			{
-				if (!reason.equals("null"))
-				{
-					warningMap.put(i, reason);
-				}
+				if (!reason.equalsIgnoreCase("null") && !(getWarningType(i) == null))
+					validWarnings.add(i);
 			}
 		}
 		
@@ -293,7 +293,7 @@ public class PunishmentManager
 		msgLib.standardMessage("Warning Level", getTotalWarnLevelColored());
 		
 		//Display all warnings.
-		for (int i = 0; i < warningMap.size(); i++)
+		for (Integer i : validWarnings)
 		{
 			warningArray = new String[12];
 			
@@ -412,11 +412,6 @@ public class PunishmentManager
 		setIsPermaFrozen(false);
 	}
 	
-	/////////////////////////////////////////////////////////////////
-	// Handle Punishments
-	// Type 0 = Warn, Type 1 = Ban, Type 2 = Mute, Type 3 kick, Type 4 = freeze
-	/////////////////////////////////////////////////////////////////
-	
 	private void checkCreatedBefore()
 	{
 		if (getCreated() == false)
@@ -484,12 +479,12 @@ public class PunishmentManager
 		int warnLevel = 0;
 		int countDays;
 		
-		if (type == 0)
+		if (type == PTYPE_WARN)
 		{
 			warnPlayer(reason, punishGiver);
 			return true;
 		}
-		else if (type == 3)
+		else if (type == PTYPE_KICK)
 		{
 			kickPlayer(reason, punishGiver);
 			return true;
@@ -501,7 +496,7 @@ public class PunishmentManager
 			//Set durationTimeText to permanent.
 			durationTimeText = "[Permanent]";
 			
-			if (type == 1)
+			if (type == PTYPE_BAN)
 			{
 				//Add the warning
 				addWarning("Ban", dfm.format(now), durationTimeText, reason, csm.getWarningLevelBan(), punishGiver);
@@ -515,7 +510,7 @@ public class PunishmentManager
 				//Alert the player that they are banned.
 				dealPunishment(1, reason, durationTimeText, punishGiver);
 			}
-			else if (type == 2)
+			else if (type == PTYPE_MUTE)
 			{
 				//Add the warning
 				addWarning("Mute", dfm.format(now), durationTimeText, reason, csm.getWarningLevelMute(), punishGiver);
@@ -526,7 +521,7 @@ public class PunishmentManager
 				//Alert the player they are muted.
 				dealPunishment(2, reason, durationTimeText, punishGiver);
 			}
-			else if (type == 4)
+			else if (type == PTYPE_FREEZE)
 			{
 				//Add the warning
 				addWarning("Frozen", dfm.format(now), durationTimeText, reason, csm.getWarningLevelMute(), punishGiver);
@@ -558,7 +553,7 @@ public class PunishmentManager
 			punishEndTime = dm.getFutureDate_Seconds(countDays);
 			
 			//If a ban
-			if (type == 1)
+			if (type == PTYPE_BAN)
 			{
 				//Set base warn level to ban warn level.
 				warnLevel = csm.getWarningLevelBan();
@@ -577,7 +572,7 @@ public class PunishmentManager
 			}
 			
 			//If a mute
-			else if (type == 2)
+			else if (type == PTYPE_MUTE)
 			{
 				//Set base warn level to ban warn level.
 				warnLevel = csm.getWarningLevelMute();
@@ -593,7 +588,7 @@ public class PunishmentManager
 			}
 			
 			//If a freeze
-			else if (type == 4)
+			else if (type == PTYPE_FREEZE)
 			{
 				//Set base warn level to ban warn level.
 				warnLevel = csm.getWarningLevelFreeze();
@@ -617,7 +612,7 @@ public class PunishmentManager
 		MessageLib msgLib;
 		Player player = Bukkit.getPlayer(playerName);
 		
-		if (type == 1)
+		if (type == PTYPE_BAN)
 		{
 			boolean displayWarnGiverName = csm.getDisplayWarnGiverNameOnPunish();
 			
@@ -638,7 +633,7 @@ public class PunishmentManager
 				}
 			}
 		}
-		else if (type == 2)
+		else if (type == PTYPE_MUTE)
 		{
 			if (player != null)
 			{
@@ -653,7 +648,7 @@ public class PunishmentManager
 				}
 			}
 		}
-		else if (type == 4)
+		else if (type == PTYPE_FREEZE)
 		{
 			if (player != null)
 			{
@@ -726,39 +721,21 @@ public class PunishmentManager
 		}
 	}
 	
-	public void sendIsBanned(Player messagePlayer)
+	public void sendIsBanned(CommandSender commandSender)
 	{
-		MessageLib msgLib = new MessageLib(messagePlayer);
+		MessageLib msgLib = new MessageLib(commandSender);
 		msgLib.standardMessage(playerName + " will be unbanned on: " + getCorrectUnbanDate());
 	}
 	
-	public void sendIsBanned(ConsoleCommandSender messagePlayer)
+	public void sendIsMuted(CommandSender commandSender)
 	{
-		MessageLib msgLib = new MessageLib(messagePlayer);
-		msgLib.standardMessage(playerName + " will be unbanned on: " + getCorrectUnbanDate());
-	}
-	
-	public void sendIsMuted(Player messagePlayer)
-	{
-		MessageLib msgLib = new MessageLib(messagePlayer);
+		MessageLib msgLib = new MessageLib(commandSender);
 		msgLib.standardMessage(playerName + " will be unmuted on: " + getCorrectUnmuteDate());
 	}
 	
-	public void sendIsMuted(ConsoleCommandSender messagePlayer)
+	public void sendIsFrozen(CommandSender commandSender)
 	{
-		MessageLib msgLib = new MessageLib(messagePlayer);
-		msgLib.standardMessage(playerName + " will be unmuted on: " + getCorrectUnmuteDate());
-	}
-	
-	public void sendIsFrozen(Player messagePlayer)
-	{
-		MessageLib msgLib = new MessageLib(messagePlayer);
-		msgLib.standardMessage(playerName + " will be unfrozen on: " + getCorrectUnfreezeDate());
-	}
-	
-	public void sendIsFrozen(ConsoleCommandSender messagePlayer)
-	{
-		MessageLib msgLib = new MessageLib(messagePlayer);
+		MessageLib msgLib = new MessageLib(commandSender);
 		msgLib.standardMessage(playerName + " will be unfrozen on: " + getCorrectUnfreezeDate());
 	}
 }

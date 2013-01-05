@@ -3,20 +3,16 @@ package me.Destro168.FC_Bans.Utils;
 import me.Destro168.FC_Suite_Shared.Messaging.MessageLib;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class BanMsgLib extends MessageLib
 {
 	CommandSender sender;
 	
-	Player player;
-	ConsoleCommandSender console;
-	
 	public String getPunisherName()
 	{
 		if (sender instanceof Player)
-			return player.getName();
+			return sender.getName();
 		
 		return "Console";
 	}

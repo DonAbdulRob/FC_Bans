@@ -1,5 +1,16 @@
 ~ FC_Bans Changelog ~
 
+Version 2.5:
+
+General:
+- Very few and small optimizations and code improvements that I made.
+
+peman-list:
+- Fixed warning list being broken when removing warnings. Still nearly-impossible for me to optimize atm to be faster.
+- New messages when you issue a punishment on a player telling you warning level and type of punishment as being successful.
+- Fixed mute/freeze removing notifying wrong person.
+
 Version 2.42:
 
 - Updated to CB Beta 1.4.6-R0.3.
+- Fixed issue where player names weren't probably able to get gotten from BanMsgLib.

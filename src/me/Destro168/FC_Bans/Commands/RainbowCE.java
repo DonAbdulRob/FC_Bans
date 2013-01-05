@@ -271,13 +271,12 @@ public class RainbowCE implements CommandExecutor
 			{
 				if (Bukkit.getServer().getPlayer(arg1).isOnline())
 				{
-					msgLib = new BanMsgLib(Bukkit.getServer().getPlayer(arg1));
-					
 					//Unfreeze.
 					FC_Bans.fm.stopPlayerFreezeTask(Bukkit.getServer().getPlayer(arg1).getName());
 					
 					//Tell the player they are unfrozen.
-					msgLib.standardMessage("You have been unfrozen.");
+					BanMsgLib banLib = new BanMsgLib(Bukkit.getServer().getPlayer(arg1));
+					banLib.standardMessage("You have been unfrozen.");
 				}
 			}
 		}
@@ -299,8 +298,9 @@ public class RainbowCE implements CommandExecutor
 			{
 				if (Bukkit.getServer().getPlayer(arg1).isOnline())
 				{
-					msgLib = new BanMsgLib(Bukkit.getServer().getPlayer(arg1));
-					msgLib.standardMessage("You have been unmuted.");
+					//Tell the person they are unmuted.
+					BanMsgLib banLib = new BanMsgLib(Bukkit.getServer().getPlayer(arg1));
+					banLib.standardMessage("You have been unmuted.");
 				}
 			}
 		}
@@ -418,7 +418,7 @@ public class RainbowCE implements CommandExecutor
 			return msgLib.errorBadDuration();
 		
 		//Attempt to show the warning list.
-		attemptShowWarningList();
+		attemptShowWarningList(target, PunishmentManager.PTYPE_BAN);
 		
 		return true;
 	}
@@ -450,7 +450,7 @@ public class RainbowCE implements CommandExecutor
 			FC_Bans.fm.startPlayerFreeze(Bukkit.getServer().getPlayer(arg0));
 		
 		//Attempt to show the warning list.
-		attemptShowWarningList();
+		attemptShowWarningList(arg0, PunishmentManager.PTYPE_FREEZE);
 		
 		return true;
 	}
@@ -473,7 +473,7 @@ public class RainbowCE implements CommandExecutor
 		record.kickPlayer(bap.getFinalArg(), msgLib.getPunisherName());
 		
 		//Attempt to show the warning list.
-		attemptShowWarningList();
+		attemptShowWarningList(arg0, PunishmentManager.PTYPE_KICK);
 		
 		return true;
 	}
@@ -502,7 +502,7 @@ public class RainbowCE implements CommandExecutor
 			return msgLib.errorBadDuration();
 		
 		//Attempt to show the warning list.
-		attemptShowWarningList();
+		attemptShowWarningList(arg0, PunishmentManager.PTYPE_MUTE);
 		
 		return true;
 	}
@@ -523,7 +523,7 @@ public class RainbowCE implements CommandExecutor
 		record.warnPlayer(bap.getFinalArg(), msgLib.getPunisherName());
 		
 		//Attempt to show the warning list.
-		attemptShowWarningList();
+		attemptShowWarningList(arg0, PunishmentManager.PTYPE_WARN);
 		
 		return true;
 	}
@@ -669,13 +669,37 @@ public class RainbowCE implements CommandExecutor
 		return true;
 	}
 	
-	private void attemptShowWarningList()
+	private void attemptShowWarningList(String pName, int type)
 	{
 		//If the global setting auto-show warning list is on, then show the warning list.
 		if (csm.getAutoShowWarningList())
 			record.showWarningList(sender);
 		else
-			msgLib.successCommand();
+		{
+			String str_Type = "";
+			
+			switch (type)
+			{
+				case 0:
+					str_Type = "Warn";
+					break;
+				case 1:
+					str_Type = "Ban";
+					break;
+				case 2:
+					str_Type = "Mute";
+					break;
+				case 3:
+					str_Type = "Kick";
+					break;
+				case 4:
+					str_Type = "Freeze";
+					break;
+				
+			}
+			
+			msgLib.infiniteMessage("[",str_Type,"] Successful on ",pName," - Warning Level: ",record.getTotalWarnLevel() + "");
+		}
 	}
 }
 
