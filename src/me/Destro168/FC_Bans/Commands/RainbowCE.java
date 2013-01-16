@@ -182,6 +182,15 @@ public class RainbowCE implements CommandExecutor
 			}
 		}
 		
+		//Update the punishment manager associated with the player in pmMap.
+		Player target = Bukkit.getServer().getPlayer(arg0);
+		
+		if (target != null)
+		{
+			FC_Bans.pmMap.remove(target);
+			FC_Bans.pmMap.put(target, record);
+		}
+		
 		return true;
 	}
 	
@@ -325,6 +334,15 @@ public class RainbowCE implements CommandExecutor
 			}
 		}
 		
+		//Update the punishment manager associated with the player in pmMap.
+		Player target = Bukkit.getServer().getPlayer(arg1);
+		
+		if (target != null)
+		{
+			FC_Bans.pmMap.remove(target);
+			FC_Bans.pmMap.put(target, record);
+		}
+		
 		//Send the player confirmation.
 		return msgLib.successCommand();
 	}
@@ -414,7 +432,7 @@ public class RainbowCE implements CommandExecutor
 			return msgLib.errorAlreadyPunished();
 		
 		//Ban the player
-		if (record.punishPlayer(1, duration, reason, punishGiver) == false)
+		if (record.punishPlayer(PunishmentManager.PTYPE_BAN, duration, reason, punishGiver) == false)
 			return msgLib.errorBadDuration();
 		
 		//Attempt to show the warning list.
@@ -443,7 +461,7 @@ public class RainbowCE implements CommandExecutor
 			bap.setArg(1, "perm");
 		
 		//Freeze the player
-		if (record.punishPlayer(4, arg1, bap.getFinalArg(), msgLib.getPunisherName()) == false)
+		if (record.punishPlayer(PunishmentManager.PTYPE_FREEZE, arg1, bap.getFinalArg(), msgLib.getPunisherName()) == false)
 			return msgLib.errorBadDuration();
 		
 		if (Bukkit.getServer().getPlayer(arg0) != null)
@@ -498,7 +516,7 @@ public class RainbowCE implements CommandExecutor
 			bap.setArg(1, "perm");
 		
 		//Mute the player
-		if (record.punishPlayer(2, arg1, bap.getFinalArg(), msgLib.getPunisherName()) == false)
+		if (record.punishPlayer(PunishmentManager.PTYPE_MUTE, arg1, bap.getFinalArg(), msgLib.getPunisherName()) == false)
 			return msgLib.errorBadDuration();
 		
 		//Attempt to show the warning list.

@@ -1,6 +1,8 @@
 package me.Destro168.FC_Bans;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import me.Destro168.FC_Bans.Commands.RainbowCE;
@@ -23,6 +25,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,6 +38,7 @@ public class FC_Bans extends JavaPlugin
 	
 	public static FC_Bans plugin;
 	public static FreezeManager fm;
+	public static Map<Player, PunishmentManager> pmMap = new HashMap<Player, PunishmentManager>();
 	
 	private RainbowCE rainbowExecutor;
 	
@@ -75,12 +79,16 @@ public class FC_Bans extends JavaPlugin
 		getServer().getPluginManager().registerEvents(new BlockPlaceListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
+		getServer().getPluginManager().registerEvents(new DropItemEvent(), this);
 		
 		try {
 			new AutoUpdate(this);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		for (Player p : Bukkit.getServer().getOnlinePlayers())
+			pmMap.put(p, new PunishmentManager(p.getName()));
 		
 		//Start task to MOVE ALL OF THE PLAYERS! MUAHAHA
 		this.getLogger().info("Enabled Successfully.");
@@ -166,7 +174,9 @@ public class FC_Bans extends JavaPlugin
 					messageViewers(name + " is also frozen.");
 			}
 			else if (pm.isFrozen() == true)
+			{
 				showJoinWarning(2);
+			}
 			else
 				showJoinWarning(-1);
 			
@@ -219,10 +229,15 @@ public class FC_Bans extends JavaPlugin
 	
 	public class PlayerJoinListener implements Listener
 	{
+		@EventHandler
 		public void onPlayerJoin(PlayerJoinEvent event)
 		{
+			Player p = event.getPlayer();
+			
 			//Begin player freezing.
-			fm.startPlayerFreeze(event.getPlayer());
+			fm.startPlayerFreeze(p);
+			
+			pmMap.put(p, new PunishmentManager(p.getName()));
 		}
 	}
 	
@@ -232,10 +247,12 @@ public class FC_Bans extends JavaPlugin
 		public void onPlayerQuit(PlayerQuitEvent event)
 		{
 			//Variable Declarations
-			Player eventPlayer = event.getPlayer();
+			Player p = event.getPlayer();
 			
 			//End the freeze task (if one exists).
-			fm.stopPlayerFreezeTask(eventPlayer.getName());
+			fm.stopPlayerFreezeTask(p.getName());
+			
+			pmMap.remove(p);
 		}
 	}
 	
@@ -248,7 +265,7 @@ public class FC_Bans extends JavaPlugin
 		public void onPlayerCommand(PlayerCommandPreprocessEvent event)
 		{
 			Player player = event.getPlayer();
-			PunishmentManager pm = new PunishmentManager(player.getName());
+			PunishmentManager pm = pmMap.get(player);
 			List<String> blockedCommands = csm.getBlockedCommands();
 			String message = event.getMessage();
 			boolean messageHasblockedCommand = false;
@@ -308,8 +325,8 @@ public class FC_Bans extends JavaPlugin
 		@EventHandler
 		public void onPlayerChat(AsyncPlayerChatEvent event)
 		{
-			PunishmentManager pm = new PunishmentManager(event.getPlayer().getName());
 			Player player = event.getPlayer();
+			PunishmentManager pm = pmMap.get(player);
 			
 			if (pm.isMuted() == true)
 			{
@@ -333,7 +350,6 @@ public class FC_Bans extends JavaPlugin
 		@EventHandler
 		public void onBlockPlaceEvent(BlockPlaceEvent event)
 		{
-			Player player;
 			boolean blocked = false;
 			PunishmentManager pm;
 			
@@ -342,10 +358,10 @@ public class FC_Bans extends JavaPlugin
 				return;
 			
 			//Store player.
-			player = event.getPlayer();
+			Player player = event.getPlayer();
 			
 			//Create punishment manager.
-			pm = new PunishmentManager(player.getName());
+			pm = pmMap.get(player);
 			
 			if (pm.isMuted() == false)
 				return;
@@ -365,31 +381,43 @@ public class FC_Bans extends JavaPlugin
 			}
 		}
 	}
+	
+	public class DropItemEvent implements Listener
+	{
+		@EventHandler
+		public void onItemDrop(PlayerDropItemEvent event)
+		{
+			Material dropType = event.getItemDrop().getItemStack().getType();
+			Player p = event.getPlayer();
+			
+			if (dropType.equals(Material.BOOK_AND_QUILL) || dropType.equals(Material.WRITTEN_BOOK))
+			{
+				if (FC_Bans.pmMap.get(p).isMuted())
+				{
+					FC_Bans.plugin.getLogger().info("[Book Drop Blocked - " + p.getName() + "] Attempted to drop a book.");
+					p.sendMessage(ChatColor.RED + "No dropping books while muted! No communicating!");
+					event.setCancelled(true);
+				}
+			}
+		}
+	}
 }
 
-/*
 
 
 
- */
 
-/*
-- Log all commands into console - done
-- Warning - done
-- Mute  - done
-- Temporary/Permanent Bans - done
-- Kick - done
-- Block all signs on muted players.
 
-- warn check
-Tips for using this with Essentials:
-Plugin.yml
-If for some reason you find that Essentials is overriding the command of your favourite plugin, you can always remove the bind from the plugin.yml file located in the essentials.jar, this will tell essentials to not even to try to bind to this command. This option should only be tried if other avenues fail. 
-*/
 
-/*
- * Upcoming Features: When a player tries to speak and is muted it will show how long until unmuted.
-*/
+
+
+
+
+
+
+
+
+
 
 
 

@@ -508,7 +508,7 @@ public class PunishmentManager
 					Bukkit.getServer().getOfflinePlayer(playerName).setBanned(true);	//Set the player to banned through bukkit.
 				
 				//Alert the player that they are banned.
-				dealPunishment(1, reason, durationTimeText, punishGiver);
+				dealPunishment(PTYPE_BAN, reason, durationTimeText, punishGiver);
 			}
 			else if (type == PTYPE_MUTE)
 			{
@@ -519,7 +519,7 @@ public class PunishmentManager
 				setIsPermaMuted(true);
 				
 				//Alert the player they are muted.
-				dealPunishment(2, reason, durationTimeText, punishGiver);
+				dealPunishment(PTYPE_MUTE, reason, durationTimeText, punishGiver);
 			}
 			else if (type == PTYPE_FREEZE)
 			{
@@ -530,7 +530,7 @@ public class PunishmentManager
 				setIsPermaFrozen(true);
 				
 				//Alert the player they are muted.
-				dealPunishment(4, reason, durationTimeText, punishGiver);
+				dealPunishment(PTYPE_FREEZE, reason, durationTimeText, punishGiver);
 			}
 		}
 		
@@ -565,7 +565,7 @@ public class PunishmentManager
 				setUnbanDate(punishEndTime);
 				
 				//Get the player
-				dealPunishment(1, reason, durationTimeText, punishGiver);
+				dealPunishment(PTYPE_BAN, reason, durationTimeText, punishGiver);
 				
 				if (csm.getEnableBukkitBanSynergy())
 					Bukkit.getServer().getOfflinePlayer(playerName).setBanned(true);	//Set the player to banned through bukkit.
@@ -584,7 +584,7 @@ public class PunishmentManager
 				setUnmuteDate(punishEndTime);
 				
 				//Alert the player they are muted.
-				dealPunishment(2, reason, durationTimeText, punishGiver);
+				dealPunishment(PTYPE_MUTE, reason, durationTimeText, punishGiver);
 			}
 			
 			//If a freeze

@@ -1,16 +1,10 @@
 ~ FC_Bans Changelog ~
 
-Version 2.5:
+Version 2.51 v2:
+- Fixed that commands being used wasn't properly updating punishment manager hashmap causing commands to not work.
 
-General:
-- Very few and small optimizations and code improvements that I made.
+Version 2.51 v1:
 
-peman-list:
-- Fixed warning list being broken when removing warnings. Still nearly-impossible for me to optimize atm to be faster.
-- New messages when you issue a punishment on a player telling you warning level and type of punishment as being successful.
-- Fixed mute/freeze removing notifying wrong person.
-
-Version 2.42:
-
-- Updated to CB Beta 1.4.6-R0.3.
-- Fixed issue where player names weren't probably able to get gotten from BanMsgLib.
+- Fixed freeze not working on player rejoins.
+- Made it so that muted players can't drop written books or books with quills (cause why not).
+- Added small optimization so that PunishmentManagers aren't generated all the time for online player events.
