@@ -5,6 +5,7 @@ Version 2.51 v3:
 - Updated block place event to be much more efficient. Thanks to peman3232
 
 Version 2.51 v2:
+
 - Fixed that commands being used wasn't properly updating punishment manager hashmap causing commands to not work.
 
 Version 2.51 v1:
