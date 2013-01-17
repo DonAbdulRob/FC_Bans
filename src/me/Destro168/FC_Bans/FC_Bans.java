@@ -350,9 +350,6 @@ public class FC_Bans extends JavaPlugin
 		@EventHandler
 		public void onBlockPlaceEvent(BlockPlaceEvent event)
 		{
-			boolean blocked = false;
-			PunishmentManager pm;
-			
 			//If the event isn't a player, return null.
 			if (event.getPlayer() == null)
 				return;
@@ -360,24 +357,14 @@ public class FC_Bans extends JavaPlugin
 			//Store player.
 			Player player = event.getPlayer();
 			
-			//Create punishment manager.
-			pm = pmMap.get(player);
-			
-			if (pm.isMuted() == false)
-				return;
-			
-			if (event.getBlock().getType() == Material.SIGN)
-				blocked = true;
-			else if (event.getBlock().getType() == Material.WALL_SIGN)
-				blocked = true;
-			else if (event.getBlock().getType() == Material.SIGN_POST)
-				blocked = true;
-			
-			if (blocked == true)
+			if (event.getBlock().getType() == Material.SIGN || event.getBlock().getType() == Material.WALL_SIGN || event.getBlock().getType() == Material.SIGN_POST)
 			{
-				FC_Bans.plugin.getLogger().info("[Sign Blocked - " + player.getName() + "] Attempted to put down a sign.");
-				player.sendMessage(ChatColor.RED + "No placing signs while muted! No communicating!");
-				event.setCancelled(true);
+				if (FC_Bans.pmMap.get(player).isMuted())
+				{
+					FC_Bans.plugin.getLogger().info("[Sign Blocked - " + player.getName() + "] Attempted to put down a sign.");
+					player.sendMessage(ChatColor.RED + "No placing signs while muted! No communicating!");
+					event.setCancelled(true);
+				}
 			}
 		}
 	}
