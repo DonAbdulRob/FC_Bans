@@ -3,7 +3,6 @@ package me.Destro168.FC_Bans;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -318,14 +317,12 @@ public class PunishmentManager
 	
 	public boolean isBanned()
 	{
-		Date now = new Date();
-		
 		//Always check if perma-banned first.
 		if (getIsPermaBanned() == true)
 			return true;
 		
 		//If they haven't served their time yet, then return true.
-		if (now.getTime() <= getUnbanDate())
+		if (System.currentTimeMillis() <= getUnbanDate())
 			return true;
 		
 		//Perform a check to see if they are ip-banned.
@@ -340,14 +337,12 @@ public class PunishmentManager
 	
 	public boolean isMuted()
 	{
-		Date now = new Date();
-		
 		//Always check if permanently muted first.
 		if (getIsPermaMuted() == true)
 			return true;
 		
 		//If they haven't served their time yet, then return true.
-		if (now.getTime() <= getUnmuteDate())
+		if (System.currentTimeMillis() <= getUnmuteDate())
 			return true;
 		
 		//If they pass all checks unmute them.
@@ -358,14 +353,12 @@ public class PunishmentManager
 	
 	public boolean isFrozen()
 	{
-		Date now = new Date();
-		
 		//Always check if permanently muted first.
 		if (getIsPermaFrozen() == true)
 			return true;
 		
 		//If they haven't served their time yet, then return true.
-		if (now.getTime() <= getUnfreezeDate())
+		if (System.currentTimeMillis() <= getUnfreezeDate())
 			return true;
 		
 		//If they pass all checks unmute them.
@@ -441,15 +434,14 @@ public class PunishmentManager
 	
 	public void warnPlayer(String reason, String warnGiver)
 	{
-		Date now = new Date();
 		Player player;
 		MessageLib msgLib;
 		
 		//Add the warning
-		addWarning("Warn", dfm.format(now), "0", reason, csm.getWarningLevelWarn(), warnGiver);
+		addWarning("Warn", dfm.format(System.currentTimeMillis()), "0", reason, csm.getWarningLevelWarn(), warnGiver);
 		
 		if (Bukkit.getPlayer(playerName) != null)
-		{	
+		{
 			player = Bukkit.getServer().getPlayer(playerName);
 			
 			if (player.isOnline() == true)
@@ -470,7 +462,6 @@ public class PunishmentManager
 	
 	public boolean punishPlayer(int type, String duration, String reason, String punishGiver)
 	{
-		Date now = new Date();
 		DateManager dm = new DateManager();
 		TimeStringParser tsp = new TimeStringParser();
 		
@@ -499,7 +490,7 @@ public class PunishmentManager
 			if (type == PTYPE_BAN)
 			{
 				//Add the warning
-				addWarning("Ban", dfm.format(now), durationTimeText, reason, csm.getWarningLevelBan(), punishGiver);
+				addWarning("Ban", dfm.format(System.currentTimeMillis()), durationTimeText, reason, csm.getWarningLevelBan(), punishGiver);
 				
 				//Set the players ban record, permanent, true.
 				setIsPermaBanned(true);
@@ -513,7 +504,7 @@ public class PunishmentManager
 			else if (type == PTYPE_MUTE)
 			{
 				//Add the warning
-				addWarning("Mute", dfm.format(now), durationTimeText, reason, csm.getWarningLevelMute(), punishGiver);
+				addWarning("Mute", dfm.format(System.currentTimeMillis()), durationTimeText, reason, csm.getWarningLevelMute(), punishGiver);
 				
 				//Set the players ban record, permanent, true.
 				setIsPermaMuted(true);
@@ -524,7 +515,7 @@ public class PunishmentManager
 			else if (type == PTYPE_FREEZE)
 			{
 				//Add the warning
-				addWarning("Frozen", dfm.format(now), durationTimeText, reason, csm.getWarningLevelMute(), punishGiver);
+				addWarning("Frozen", dfm.format(System.currentTimeMillis()), durationTimeText, reason, csm.getWarningLevelMute(), punishGiver);
 				
 				//Set the players ban record, permanent, true.
 				setIsPermaFrozen(true);
@@ -559,7 +550,7 @@ public class PunishmentManager
 				warnLevel = csm.getWarningLevelBan();
 				
 				//Add the warning
-				addWarning("Ban", dfm.format(now), durationTimeText, reason, warnLevel, punishGiver);
+				addWarning("Ban", dfm.format(System.currentTimeMillis()), durationTimeText, reason, warnLevel, punishGiver);
 				
 				//Set player unban date to a future date based on past time.
 				setUnbanDate(punishEndTime);
@@ -578,7 +569,7 @@ public class PunishmentManager
 				warnLevel = csm.getWarningLevelMute();
 				
 				//Add the warning
-				addWarning("Mute", dfm.format(now), durationTimeText, reason, warnLevel, punishGiver);
+				addWarning("Mute", dfm.format(System.currentTimeMillis()), durationTimeText, reason, warnLevel, punishGiver);
 				
 				//Set the players unmute time equal to current time + mute length.
 				setUnmuteDate(punishEndTime);
@@ -594,7 +585,7 @@ public class PunishmentManager
 				warnLevel = csm.getWarningLevelFreeze();
 				
 				//Add the warning
-				addWarning("Freeze", dfm.format(now), durationTimeText, reason, warnLevel, punishGiver);
+				addWarning("Freeze", dfm.format(System.currentTimeMillis()), durationTimeText, reason, warnLevel, punishGiver);
 				
 				//Set the players unmute time equal to current time + mute length.
 				setUnfreezeDate(punishEndTime);
@@ -667,10 +658,8 @@ public class PunishmentManager
 
 	public void kickPlayer(String reason, String kicker)
 	{
-		Date now = new Date();
-		
 		//Add the warning
-		addWarning("Kick", dfm.format(now), "0", reason, csm.getWarningLevelKick(), kicker);
+		addWarning("Kick", dfm.format(System.currentTimeMillis()), "0", reason, csm.getWarningLevelKick(), kicker);
 		
 		//Kick the player
 		if (Bukkit.getServer().getPlayer(playerName) != null)

@@ -326,7 +326,16 @@ public class FC_Bans extends JavaPlugin
 		public void onPlayerChat(AsyncPlayerChatEvent event)
 		{
 			Player player = event.getPlayer();
+			
+			// If the player is null return.
+			if (player == null)
+				return;
+			
 			PunishmentManager pm = pmMap.get(player);
+			
+			// If the punishment manager is null return.
+			if (pm == null)
+				return;
 			
 			if (pm.isMuted() == true)
 			{
