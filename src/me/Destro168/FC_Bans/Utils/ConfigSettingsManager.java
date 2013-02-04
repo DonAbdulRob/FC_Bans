@@ -188,8 +188,8 @@ public class ConfigSettingsManager
 		}
 		
 		//Update the version.
-		if (getVersion() < 2.52)
-			setVersion(2.52);
+		if (getVersion() < 2.53)
+			setVersion(2.53);
 		
 		//Save config
 		plugin.saveConfig();

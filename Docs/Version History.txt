@@ -1,5 +1,15 @@
 ~ FC_Bans Version History ~
 
+-------------------------------------------------------------------
+Version 2.52:
+-------------------------------------------------------------------
+FC_Suite_Shared Requirement: Version 2.56
+-------------------------------------------------------------------
+General:
+- Added a few null checks to player chat event.
+
+-------------------------------------------------------------------
+
 Version 2.51 v3:
 
 - Updated block place event to be much more efficient. Thanks to peman3232

@@ -4,6 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/Destro/Desktop/Locathost server/plugins/Vault.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Destro/Desktop/Locathost server/plugins/FC_Suite_Shared.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Destro/Desktop/Locathost server/bukkit.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Destro/Desktop/Locathost server/craftbukkit.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
